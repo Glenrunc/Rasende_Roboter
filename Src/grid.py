@@ -3,27 +3,69 @@ import numpy as np
 
 class Case:
 
-    def __init__(self,up=False,down=False,right=False,left=False):
+    def __init__(self,up=False,right=False,down=False,left=False):
+
         self.up = up
         self.down = down
         self.right = right
         self.left = left
 
     def center(self):
+
         self.up = True
         self.down = True
         self.right = True
         self.left = True  
 
     def empty(self):
+
         self.up = False
         self.down = False
         self.right = False
         self.left = False  
     
-    def rot90(self): None
-        #Todo
+    def rot90(self):
 
+        assit_rotate = [self.up,self.right,self.down,self.left]
+        weight_assist = sum(assit_rotate)
+
+        if (weight_assist == 1):
+            if(self.up == True):
+                self.up = False
+                self.right = True
+                return
+            if(self.right == True):
+                self.right = False
+                self.down = True
+                return
+            if(self.down == True):
+                self.down = False
+                self.left = True
+                return
+            if(self.left == True):
+                self.left = False
+                self.up = True
+                return
+            
+        if (weight_assist == 2):
+            if(self.up == self.right == True):
+                self.up = False
+                self.down = True
+                return
+            if(self.right == self.down == True):
+                self.right = False
+                self.left = True
+                return
+            if(self.left == self.down == True):
+                self.down = False
+                self.up = True
+                return
+            if(self.left == self.up == True):
+                self.left = False
+                self.right = True
+                return
+
+            
 class Plate:
 
     def __init__(self,N):
@@ -33,7 +75,7 @@ class Plate:
 
     def rotate(self,n):
         for _ in range(n % 4):  # Ensure n is between 0 and 3
-            self.l_grid = np.rot90(self.l_grid)
+            self.l_grid = np.rot90(self.l_grid,axes=(1,0))
 
 
 _plate1 = Plate(8)
@@ -115,3 +157,35 @@ class Grid:
         self.wall_around()
         self.center_goal()
         #DO RANDOM ROTATION
+
+case1 = Case(True,True,False,False)
+print(case1.up)
+print(case1.right)
+print(case1.down)
+print(case1.left)
+print("\n")
+
+case1.rot90()
+
+print(case1.up)
+print(case1.right)
+print(case1.down)
+print(case1.left)
+
+print("\n")
+case1.rot90()
+
+print(case1.up)
+print(case1.right)
+print(case1.down)
+print(case1.left)
+
+print("\n")
+
+case1.rot90()
+print("\n")
+
+print(case1.up)
+print(case1.right)
+print(case1.down)
+print(case1.left)
