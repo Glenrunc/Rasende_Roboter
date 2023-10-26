@@ -1,191 +1,185 @@
 import numpy as np
+import random as rd
+import pygame 
+import sys
 
-
-class Case:
+class Case(object):
 
     def __init__(self,up=False,right=False,down=False,left=False):
 
-        self.up = up
-        self.down = down
-        self.right = right
-        self.left = left
-
-    def center(self):
-
-        self.up = True
-        self.down = True
-        self.right = True
-        self.left = True  
+        self.wall = np.array([up,right,down,left])
 
     def empty(self):
 
-        self.up = False
-        self.down = False
-        self.right = False
-        self.left = False  
+        self.wall = False
     
     def rot90(self):
-
-        assit_rotate = [self.up,self.right,self.down,self.left]
-        weight_assist = sum(assit_rotate)
-
-        if (weight_assist == 1):
-            if(self.up == True):
-                self.up = False
-                self.right = True
-                return
-            if(self.right == True):
-                self.right = False
-                self.down = True
-                return
-            if(self.down == True):
-                self.down = False
-                self.left = True
-                return
-            if(self.left == True):
-                self.left = False
-                self.up = True
-                return
-            
-        if (weight_assist == 2):
-            if(self.up == self.right == True):
-                self.up = False
-                self.down = True
-                return
-            if(self.right == self.down == True):
-                self.right = False
-                self.left = True
-                return
-            if(self.left == self.down == True):
-                self.down = False
-                self.up = True
-                return
-            if(self.left == self.up == True):
-                self.left = False
-                self.right = True
-                return
+        self.wall = np.roll(self.wall,1)
 
             
-class Plate:
+class Plate(object):
 
     def __init__(self,N):
         self.N = N
         self.l_grid = np.array([[Case() for _ in range(N)] for _ in range(N)])
         # self.grid = np.array([[i+1 for _ in range(N)] for i in range(N)]) #Good example
 
-    def rotate(self,n):
-        for _ in range(n % 4):  # Ensure n is between 0 and 3
+    def rotate(self):
+        n = rd.randint(1,3)
+        for _ in range(n % 4):  # Ensure n is between 1 and 3
             self.l_grid = np.rot90(self.l_grid,axes=(1,0))
+            for i in range (self.N):
+                for j in range (self.N):
+                    self.l_grid[i][j].rot90()
 
 
 _plate1 = Plate(8)
-_plate1.l_grid[0][3].right = True
-_plate1.l_grid[2][5].right = True 
-_plate1.l_grid[2][5].down = True
-_plate1.l_grid[4][0].down = True
-_plate1.l_grid[4][2].right = True
-_plate1.l_grid[4][2].up = True
-_plate1.l_grid[5][1].down = True
-_plate1.l_grid[5][7].down = True
-_plate1.l_grid[5][7].left = True
-_plate1.l_grid[6][1].left = True
-_plate1.l_grid[6][1].up = True
+_plate1.l_grid[0][3].wall[1] = True
+_plate1.l_grid[2][5].wall[1] = True 
+_plate1.l_grid[2][5].wall[2] = True
+_plate1.l_grid[4][0].wall[2] = True
+_plate1.l_grid[4][2].wall[1] = True
+_plate1.l_grid[4][2].wall[0] = True
+_plate1.l_grid[5][1].wall[2] = True
+_plate1.l_grid[5][7].wall[2] = True
+_plate1.l_grid[5][7].wall[3] = True
+_plate1.l_grid[6][1].wall[3] = True
+_plate1.l_grid[6][1].wall[0] = True
 
 _plate2 = Plate(8)
-_plate2.l_grid[0][1].right = True
-_plate2.l_grid[1][5].right = True
-_plate2.l_grid[1][5].right = True
-_plate2.l_grid[1][5].right = True
-_plate2.l_grid[3][1].left = True
-_plate2.l_grid[3][1].up = True
-_plate2.l_grid[4][6].up = True
-_plate2.l_grid[4][6].right = True
-_plate2.l_grid[6][4].down = True
-_plate2.l_grid[6][4].left = True
+_plate2.l_grid[0][1].wall[1] = True
+_plate2.l_grid[1][5].wall[1] = True
+_plate2.l_grid[1][5].wall[1] = True
+_plate2.l_grid[1][5].wall[1] = True
+_plate2.l_grid[3][1].wall[3] = True
+_plate2.l_grid[3][1].wall[0] = True
+_plate2.l_grid[4][6].wall[0] = True
+_plate2.l_grid[4][6].wall[1] = True
+_plate2.l_grid[6][4].wall[2] = True
+_plate2.l_grid[6][4].wall[3] = True
 
 _plate3 = Plate(8)
-_plate3.l_grid[1][4].down = True
-_plate3.l_grid[1][4].left = True
-_plate3.l_grid[2][0].down = True
-_plate3.l_grid[2][6].left = True
-_plate3.l_grid[2][6].up = True
-_plate3.l_grid[4][7].up = True
-_plate3.l_grid[4][7].right = True
-_plate3.l_grid[5][1].up = True
-_plate3.l_grid[5][1].right = True
-_plate3.l_grid[6][3].right = True
-_plate3.l_grid[6][3].down = True
-_plate3.l_grid[7][4].right = True
+_plate3.l_grid[1][4].wall[2] = True
+_plate3.l_grid[1][4].wall[3] = True
+_plate3.l_grid[2][0].wall[2] = True
+_plate3.l_grid[2][6].wall[3] = True
+_plate3.l_grid[2][6].wall[0] = True
+_plate3.l_grid[4][7].wall[0] = True
+_plate3.l_grid[4][7].wall[1] = True
+_plate3.l_grid[5][1].wall[0] = True
+_plate3.l_grid[5][1].wall[1] = True
+_plate3.l_grid[6][3].wall[1] = True
+_plate3.l_grid[6][3].wall[2] = True
+_plate3.l_grid[7][4].wall[1] = True
 
 _plate4 = Plate(8)
-_plate4.l_grid[1][5].down = True
-_plate4.l_grid[1][5].left = True
-_plate4.l_grid[3][1].right = True
-_plate4.l_grid[3][1].down = True
-_plate4.l_grid[4][7].up = True
-_plate4.l_grid[5][6].up = True
-_plate4.l_grid[5][6].right = True
-_plate4.l_grid[6][2].up = True
-_plate4.l_grid[6][2].left = True
-_plate4.l_grid[7][4].left = True
+_plate4.l_grid[1][5].wall[2] = True
+_plate4.l_grid[1][5].wall[3] = True
+_plate4.l_grid[3][1].wall[1] = True
+_plate4.l_grid[3][1].wall[2] = True
+_plate4.l_grid[4][7].wall[0] = True
+_plate4.l_grid[5][6].wall[0] = True
+_plate4.l_grid[5][6].wall[1] = True
+_plate4.l_grid[6][2].wall[0] = True
+_plate4.l_grid[6][2].wall[3] = True
+_plate4.l_grid[7][4].wall[3] = True
 
-class Grid:
+
+class Grid(object):
     def __init__(self, plate1 : Plate,plate2 : Plate, plate3: Plate, plate4: Plate):
         self.plate1 = plate1
         self.plate2 = plate2
         self.plate3 = plate3
         self.plate4 = plate4
-        self.grid = np.zero((16,16))
+        self.grid = np.zeros((16,16),dtype=object)
 
     def wall_around(self):
-        self.grid[1,:].up = True
-        self.grid[:,1].left = True
-        self.grid[7,:].down = True
-        self.grid[:,7].right = True
+        for i in range(16):
+            self.grid[0, i].wall[0] = True
+            self.grid[i, 0].wall[3] = True
+            self.grid[-1, i].wall[2] = True
+            self.grid[i, -1].wall[1] = True
 
     def center_goal(self):
-        self.grid[7:8,7:8].center()
+        self.grid[7,7].wall[3] = True
+        self.grid[7,7].wall[0] = True
+        self.grid[7,8].wall[0] = True
+        self.grid[7,8].wall[1] = True
+        self.grid[8,7].wall[3] = True
+        self.grid[8,7].wall[2] = True
+        self.grid[8,8].wall[1] = True
+        self.grid[8,8].wall[2] = True
     
     def create_grid(self):
-        self.grid[:8,:8] = self.plate1
-        self.grid[:8,8:] = self.plate2
-        self.grid[8:,:8] = self.plate3
-        self.grid[8:,8:] = self.plate4
+        self.plate1.rotate()
+        self.plate2.rotate()
+        self.plate3.rotate()
+        self.plate4.rotate()
 
+        self.grid[:8,:8] = self.plate1.l_grid
+        self.grid[:8,8:] = self.plate2.l_grid
+        self.grid[8:,:8] = self.plate3.l_grid
+        self.grid[8:,8:] = self.plate4.l_grid
+
+
+    
     def grid_final(self):
         self.create_grid()
         self.wall_around()
         self.center_goal()
-        #DO RANDOM ROTATION
 
-case1 = Case(True,True,False,False)
-print(case1.up)
-print(case1.right)
-print(case1.down)
-print(case1.left)
-print("\n")
+    def display(self, screen):
+        for i in range(16):
+            for j in range(16):
+                x = j * 50
+                y = i * 50
 
-case1.rot90()
+                if self.grid[i, j].wall[0]:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y), (x + 50, y), 5)
+                else:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y), (x + 50, y), 1)
+    
+                if self.grid[i, j].wall[1]:
+                    pygame.draw.line(screen, (0, 0, 0), (x + 50, y), (x + 50, y + 50), 5)
+                else:
+                    pygame.draw.line(screen, (0, 0, 0), (x + 50, y), (x + 50, y + 50), 1)
+    
+                if self.grid[i, j].wall[2]:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y + 50), (x + 50, y + 50), 5)
+                else:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y + 50), (x + 50, y + 50), 1)
+    
+                if self.grid[i, j].wall[3]:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y), (x, y + 50), 5)
+                else:
+                    pygame.draw.line(screen, (0, 0, 0), (x, y), (x, y + 50), 1)
 
-print(case1.up)
-print(case1.right)
-print(case1.down)
-print(case1.left)
 
-print("\n")
-case1.rot90()
 
-print(case1.up)
-print(case1.right)
-print(case1.down)
-print(case1.left)
 
-print("\n")
 
-case1.rot90()
-print("\n")
 
-print(case1.up)
-print(case1.right)
-print(case1.down)
-print(case1.left)
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 800))
+        pygame.display.set_caption("Rasende Roboter")
+        self.clock = pygame.time.Clock()
+
+        self.grid = Grid(_plate1,_plate2,_plate3,_plate4)  
+        self.grid.grid_final()
+
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            self.screen.fill((255, 255, 255))
+            self.grid.display(self.screen)
+            pygame.display.flip()
+            self.clock.tick(60)
+
+game = Game()
+game.run()
