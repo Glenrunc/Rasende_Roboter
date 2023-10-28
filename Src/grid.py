@@ -26,10 +26,10 @@ class Grid(object):
         self.grid[8,8].wall[2] = True
     
     def create_grid(self):
-        # self.plate1.rotate()
-        # self.plate2.rotate()
-        # self.plate3.rotate()
-        # self.plate4.rotate()
+        self.plate1.rotate()
+        self.plate2.rotate()
+        self.plate3.rotate()
+        self.plate4.rotate()
 
         self.grid[:8,:8] = self.plate1.l_grid
         self.grid[:8,8:] = self.plate2.l_grid
@@ -68,4 +68,4 @@ class Grid(object):
                     pygame.draw.line(screen, (0, 0, 0), (x, y), (x, y + 50), 5)
                 else:
                     pygame.draw.line(screen, (0, 0, 0), (x, y), (x, y + 50), 1)
-
+                

@@ -10,6 +10,8 @@ class Game:
 
         self.grid = Grid(_plate1,_plate2,_plate3,_plate4)  
         self.grid.grid_final()
+        # self.robot_image = pygame.image.load('../Asset/yellow_robot.png') Just a test for the asset
+        # self.robot1_image = pygame.image.load('../Asset/green_robot.png')
 
     def run(self):
        
@@ -18,9 +20,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+            
             self.screen.fill((255, 255, 255))
             self.grid.display(self.screen)
+            # self.screen.blit(self.robot_image,((1*50)+7,(1*50)+7))  Just a test for the asset
+            # self.screen.blit(self.robot1_image,((3*50)+7,(10*50)+7))
             pygame.display.flip()
             self.clock.tick(60)
 
