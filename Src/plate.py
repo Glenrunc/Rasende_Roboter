@@ -14,5 +14,3 @@ class Plate(object):
             for i in range (self.N):
                 for j in range (self.N):
                     self.l_grid[i][j].rot90()
-
-
