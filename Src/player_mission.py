@@ -38,10 +38,10 @@ ASSET_MAP = {
      (Color.BLUE, Mission.CIRCLE): "../Asset/blue_circle_mission.png",
  }
 class Player_Mission(object):
-    def __init__(self,_color = Color(0),_mission=Mission(0),_x = 0 ,_y = 0):
+    def __init__(self,_color = Color(0),_mission=Mission(0),_i = 0 ,_j= 0):
         self.color = _color
         self.mission = _mission
-        self.coordinate = (_y,_x)
+        self.coordinate = (_i,_j)
         self.update_asset()
 
     def set_color(self, new_color):

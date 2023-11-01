@@ -10,8 +10,6 @@ class Game:
 
         self.grid = Grid()  
         self.grid.grid_final()
-        self.grid.add_robot(Color.RED, Mission.EMPTY, 2, 2)
-
 
     def run(self):
        
