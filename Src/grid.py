@@ -76,6 +76,7 @@ class Grid(object):
         self.mission_goal = goal.mission
     
     def display(self, screen):
+        screen.fill((self.grid[0,0].color))
         for i in range(16):
             for j in range(16):
                 x = j * 50
