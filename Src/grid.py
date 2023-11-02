@@ -22,8 +22,8 @@ class Grid(object):
         self.grid[8,8].wall[1] = True
         self.grid[8,8].wall[2] = True
 
-    def add_status(self, color, mission, i, j):
-        player = Player_Mission(color, mission, i,j)
+    def add_status(self, color, i, j):
+        player = Player(color, i,j)
         self.grid[i,j].status = player
 
     def create_grid(self):
@@ -42,38 +42,19 @@ class Grid(object):
         self.wall_around()
         self.center_goal()
         #ROBOT INITIALIZED
-        self.add_status(Color.RED, Mission.EMPTY, 0, 0)
-        self.add_status(Color.BLUE, Mission.EMPTY, 2, 1)
-        self.add_status(Color.YELLOW, Mission.EMPTY, 4, 7)
-        self.add_status(Color.GREEN, Mission.EMPTY, 5, 12)
-        #MISSION INITIALIZED
-        #RED
-        self.add_status(Color.RED, Mission.SQUARE, 13, 14)
-        self.add_status(Color.RED, Mission.TRIANGLE, 5, 7)
-        self.add_status(Color.RED, Mission.CIRCLE, 4, 14)
-        self.add_status(Color.RED, Mission.STAR, 13, 1)
-        #YELLOW
-        self.add_status(Color.YELLOW, Mission.SQUARE, 6, 1)
-        self.add_status(Color.YELLOW, Mission.TRIANGLE, 9, 4)
-        self.add_status(Color.YELLOW, Mission.CIRCLE, 11, 9)
-        self.add_status(Color.YELLOW, Mission.STAR, 6, 12)    
-        #BLUE
-        self.add_status(Color.BLUE, Mission.SQUARE, 3, 9)
-        self.add_status(Color.BLUE, Mission.TRIANGLE, 9, 13)
-        self.add_status(Color.BLUE, Mission.CIRCLE, 10, 6)
-        self.add_status(Color.BLUE, Mission.STAR, 2, 5)
-        #GREEN
-        self.add_status(Color.GREEN, Mission.SQUARE, 15, 3)
-        self.add_status(Color.GREEN, Mission.TRIANGLE, 1, 13)
-        self.add_status(Color.GREEN, Mission.CIRCLE, 4, 2)
-        self.add_status(Color.GREEN, Mission.STAR, 14, 10)
+        self.add_status(Color.RED, 0, 0)
+        self.add_status(Color.BLUE, 2, 1)
+        self.add_status(Color.YELLOW, 4, 7)
+        self.add_status(Color.GREEN, 5, 12)
         self.update_super_goal()
 
     def update_super_goal(self):
-        goal = Player_Mission(Color(rd.randint(1,4)),Mission(rd.randint(1,4)),7,7)
-        self.grid[7,7].status = goal
-        self.color_goal = goal.color
-        self.mission_goal = goal.mission
+
+        goal = mission_tab[rd.randint(0,len(mission_tab)-1)]
+        self.goal_coordinate = (goal[0],goal[1])
+        self.color_goal = goal[2]
+        self.mission_goal = goal[3]
+        self.asset_goal = ASSET_MAP.get((self.color_goal, self.mission_goal),"empty")
     
     def display(self, screen):
         screen.fill((self.grid[0,0].color))
@@ -106,12 +87,15 @@ class Grid(object):
                 if (self.grid[i][j].status.asset != "empty") & (not(i in [7, 8] and j in [7, 8])):
                     screen.blit(pygame.image.load(self.grid[i][j].status.asset), (x+7, y+7))
 
-                if (i==7) & (j==7):
-                    original_image = pygame.image.load(self.grid[i][j].status.asset)
-                    scaled_image = pygame.transform.scale(original_image, (original_image.get_width() * 2.5, original_image.get_height() * 2.5))
-                    screen.blit(scaled_image, (x+7, y+7))
+            # CENTER GOAL
+            original_image = pygame.image.load(self.asset_goal)
+            scaled_image = pygame.transform.scale(original_image, (original_image.get_width() * 2.5, original_image.get_height() * 2.5))
+            screen.blit(scaled_image, (50*7+7, 50*7+7))
 
-
+            #MISSION
+            for mission in mission_tab:
+                screen.blit(pygame.image.load(ASSET_MAP.get((mission[2],mission[3]),"empty")),(mission[0]*50+7,mission[1]*50+7))
+        # screen.blit(pygame.image.load("../Asset/red_robot.png"), (50+7, 6*50+7))
         
  # Creation of the fourth plates        
 _plate1 = Plate(8)

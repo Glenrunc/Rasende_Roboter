@@ -19,8 +19,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
             # if(pygame.mouse.get_pressed()[0]):
-            #     (mx,my) = pygame.mouse.get_pos()
-            #     print(mx//50,my//50)
+            #     self.grid.update_super_goal()
             
             self.grid.display(self.screen)
             pygame.display.flip()

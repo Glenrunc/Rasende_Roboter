@@ -11,7 +11,7 @@ from player_mission import *
 
 class Case(object):
 
-    def __init__(self,up=False,right=False,down=False,left=False, _status = Player_Mission(), _color =(255,255,255)):
+    def __init__(self,up=False,right=False,down=False,left=False, _status = Player(), _color =(255,255,255)):
         self.color= _color
         self.wall = np.array([up,right,down,left])
         self.status = _status
