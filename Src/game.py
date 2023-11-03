@@ -18,9 +18,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            # if(pygame.mouse.get_pressed()[0]):
-            #     (mx,my) = pygame.mouse.get_pos()
-            #     print(mx//50,my//50)
+            if(pygame.mouse.get_pressed()[0]):
+                 (mx,my) = pygame.mouse.get_pos()
+                 print(mx//50,my//50)
             
             self.grid.display(self.screen)
             pygame.display.flip()
