@@ -11,9 +11,11 @@ class Game:
         self.grid = Grid()  
         self.grid.grid_final()
         # print(self.grid.position_robot)
+        
     def run(self):
     
         while True:
+            self.grid.win(self.screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -21,7 +23,6 @@ class Game:
 
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     if(event.button == 1):
-                        # self.grid.update_super_goal()
                         (x,y) = pygame.mouse.get_pos()
                         
                         (x,y) = ((y-40)//45,(x-40)//45)

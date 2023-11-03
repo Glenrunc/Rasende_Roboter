@@ -34,14 +34,31 @@ class Grid(object):
     def clean_color_grid(self):
         for i in range(16):
             for j in range(16):
-                self.grid[i, j].clean()
+                self.grid[i, j].clean()     
+
+    def win_display(self,screen):
+            font = pygame.font.Font(None,100)
+            text = font.render("YOU HAVE WON",True,(0,0,0))
+            pos = (125,375)
+            screen.fill((rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
+            screen.blit(text,pos)
+            pygame.display.update()
+         
+    def win(self,screen):
+        timeout = t.time()
+        if self.grid[self.goal_coordinate[0],self.goal_coordinate[1]].status.color == self.color_goal :
+            while t.time() - timeout < 2:
+                self.win_display(screen)
+            screen.fill((255,255,255))
+            self.update_super_goal()
 
     def move(self,i,j):
+
         if 0 <= i < 16 and 0 <= j < 16:
             #IF the player wants to clean a way 
             if (self.grid[i,j].color == (255,255,255)) & (self.grid[i,j].status.color == Color.EMPTY):
                 self.clean_color_grid()
-            #When The player click on a robot 
+            #When The player click on a robot , usefull to indicate the possible way  
             if (self.grid[i,j].status.color != Color.EMPTY):
                 self.clean_color_grid()
                 #verification move
@@ -146,7 +163,9 @@ class Grid(object):
                     self.add_status(self.grid[self.position_robot[self.grid[i,j].color][0],self.position_robot[self.grid[i,j].color][1]].status.color,k,j)
                     self.clean_status(self.position_robot[self.grid[i,j].color][0],self.position_robot[self.grid[i,j].color][1])
                     self.clean_color_grid()
-                    self.actualize_robot_position()       
+                    self.actualize_robot_position()
+
+    #After a move, the robot position needs to be update                        
     def actualize_robot_position(self):
         self.position_robot = {}
 
