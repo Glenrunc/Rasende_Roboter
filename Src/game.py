@@ -4,13 +4,13 @@ class Game:
     
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 800))
+        self.screen = pygame.display.set_mode((800,800))
         pygame.display.set_caption("Rasende Roboter")
         self.clock = pygame.time.Clock()
-
+        self.screen.fill((255,255,255))
         self.grid = Grid()  
         self.grid.grid_final()
-
+        # print(self.grid.position_robot)
     def run(self):
     
         while True:
@@ -18,9 +18,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            # if(pygame.mouse.get_pressed()[0]):
-            #     self.grid.update_super_goal()
-            
+
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    if(event.button == 1):
+                        # self.grid.update_super_goal()
+                        (x,y) = pygame.mouse.get_pos()
+                        
+                        (x,y) = ((y-40)//45,(x-40)//45)
+                        print((x,y))
+                        self.grid.move(x,y)
+
             self.grid.display(self.screen)
             pygame.display.flip()
             self.clock.tick(60)

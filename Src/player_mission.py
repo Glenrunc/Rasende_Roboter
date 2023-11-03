@@ -15,7 +15,7 @@ class  Mission(Enum):
     CIRCLE = 4
 
 ASSET_MAP = {
-     (Color.EMPTY, Mission.EMPTY): "empty",
+     (Color.EMPTY, Mission.EMPTY): "../Asset/empty.png",
      (Color.YELLOW, Mission.EMPTY): "../Asset/yellow_robot.png",
      (Color.YELLOW, Mission.SQUARE): "../Asset/yellow_square_mission.png",
      (Color.YELLOW, Mission.STAR): "../Asset/yellow_star_mission.png",
@@ -39,9 +39,8 @@ ASSET_MAP = {
 } 
 
 class Player(object):
-    def __init__(self,_color = Color(0),_i = 0 ,_j= 0):
+    def __init__(self,_color = Color(0)):
         self.color = _color
-        self.coordinate = (_j,_i)
         self.update_asset()
 
     def set_color(self, new_color):
