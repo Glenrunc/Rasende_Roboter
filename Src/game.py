@@ -5,14 +5,15 @@ class Game:
     
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800,800))
+        self.screen = pygame.display.set_mode((HEIGHT,WIDTH))
         pygame.display.set_caption("Rasende Roboter")
         self.clock = pygame.time.Clock()
         self.screen.fill((255,255,255))
         self.grid = Grid()  
         self.grid.grid_final()
         # print(self.grid.position_robot)
-        
+        # self.grid.get_position(Color.BLUE,'DOWN')
+    
     def run(self):
 
         # TESTS IA
