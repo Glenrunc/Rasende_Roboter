@@ -10,12 +10,14 @@ from player_mission import *
 # PASTEL GREEN  (173, 255, 173)
 # PASTEL YELLOW  (255, 255, 191) OR (255, 240, 100)
 
-MOOVE_MAP ={
+COLOR_MAP ={
     (Color.BLUE) : (173, 216, 230),
     (Color.YELLOW) : (255, 240, 100),
     (Color.GREEN) : (173, 255, 173),
     (Color.RED) : (255, 182, 193),
 }
+
+INVERTED_COLOR_MAP = {v: k for k, v in COLOR_MAP.items()}
 
 class Case(object):
 
@@ -27,6 +29,13 @@ class Case(object):
     def empty(self):
         self.wall = False
     
+    def is_empty(self):
+        for wall in self.wall:
+            if wall == True:
+                return False
+            
+        return True
+
     def rot90(self):
         self.wall = np.roll(self.wall,1)
 
