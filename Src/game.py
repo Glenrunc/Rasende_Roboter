@@ -1,4 +1,5 @@
 from grid import *
+from ia import *
     
 class Game:
     
@@ -13,6 +14,15 @@ class Game:
         # print(self.grid.position_robot)
         
     def run(self):
+
+        # TESTS IA
+        robot_position = next(iter(self.grid.position_robot.values()))
+        # print(robot_position)
+        goal_position = self.grid.goal_coordinate
+        # print(goal_position)
+        chemin, nb_etats = BFS(self.grid,robot_position, goal_position)
+
+
     
         while True:
             self.grid.win(self.screen)
@@ -29,6 +39,7 @@ class Game:
                         print((x,y))
                         self.grid.move(x,y)
 
+            
             self.grid.display(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
