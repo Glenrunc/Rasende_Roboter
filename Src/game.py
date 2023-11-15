@@ -1,5 +1,6 @@
 from grid import *
 from ia import *
+
     
 class Game:
     
@@ -18,13 +19,11 @@ class Game:
 
         # TESTS IA
         robot_position = next(iter(self.grid.position_robot.values()))
-        # print(robot_position)
         goal_position = self.grid.goal_coordinate
-        # print(goal_position)
-        chemin, nb_etats = BFS(self.grid,robot_position, goal_position)
+        print("position à atteindre", goal_position)
+        #chemin = BFS(self.grid,robot_position, goal_position)
+        a_star_search(self.grid,robot_position, goal_position)
 
-
-    
         while True:
             self.grid.win(self.screen)
             for event in pygame.event.get():
