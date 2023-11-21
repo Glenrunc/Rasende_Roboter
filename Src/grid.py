@@ -207,7 +207,56 @@ class Grid(object):
             if(k != i):
                 self.possible_move_per_robot[robot].append({"DOWN":(k,l)})        
 
-      
+      #Get the possible move for a goal
+    def possible_move_goal(self, goal_position):
+        
+        possible_move= []
+
+
+        
+        i = goal_position[0]
+        j = goal_position[1]
+        k = i
+        l = j
+        while l < 15 :
+            if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)): 
+                l = l+1   
+            else:
+                break
+        if(l!=j):    
+            possible_move.append((k,l))
+        # To the left
+        k = i
+        l = j    
+        while l > 0 :
+            if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)): 
+                l = l-1   
+            else:
+                break
+        if(l!=j):
+            possible_move.append((k,l))            
+        # To the up 
+        k = i
+        l = j 
+        while k > 0 :
+            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)): 
+                k = k-1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))            
+        #To the down 
+        k = i
+        l = j 
+        while k < 15 :
+            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)): 
+                k = k+1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))   
+
+        return possible_move
 
     #After a move, the robot position needs to be update                        
     def actualize_robot_position(self):

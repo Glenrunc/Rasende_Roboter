@@ -18,11 +18,16 @@ class Game:
     def run(self):
 
         # TESTS IA
-        robot_position = next(iter(self.grid.position_robot.values()))
         goal_position = self.grid.goal_coordinate
+        color_robot =self.grid.color_goal
+        print("position du robot", color_robot)
         print("position à atteindre", goal_position)
+
+        robot_position = self.grid.position_robot[color_robot]
         #chemin = BFS(self.grid,robot_position, goal_position)
-        a_star_search(self.grid,robot_position, goal_position)
+
+
+        test(self.grid)
 
         while True:
             self.grid.win(self.screen)
