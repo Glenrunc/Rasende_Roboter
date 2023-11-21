@@ -6,6 +6,10 @@ class Grid(object):
 
     def __init__(self):
         self.grid = np.array([[Case() for _ in range(16)] for _ in range(16)])
+        self.count_move = 0
+
+    def reset_move(self):
+        self.count_move = 0 
 
     def wall_around(self):
         for i in range(16):
@@ -53,6 +57,18 @@ class Grid(object):
                 self.win_display(screen)
             screen.fill((255,255,255))
             self.update_super_goal()
+            self.initial_position = self.position_robot
+            self.count_move = 0
+    #reset the round
+    def reset(self,i,j):
+        if (i == -1 and j==16):
+            self.count_move = 0
+            self.clean_color_grid()
+            for robot in self.position_robot:
+                self.clean_status(self.position_robot.get(robot)[0],self.position_robot.get(robot)[1])
+            for robot in self.initial_position:
+                self.add_status(robot,self.initial_position.get(robot)[0],self.initial_position.get(robot)[1])
+            self.actualize_robot_position()
 
     def move(self,i,j):
         # self.possible_move()
@@ -111,6 +127,7 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
 
             if(self.grid[i,j].color != (255,255,255)):
 
@@ -122,6 +139,8 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+
 
             if(self.grid[i,j].color != (255,255,255)):
                 
@@ -133,6 +152,8 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+
 
             if(self.grid[i,j].color != (255,255,255)):
                 
@@ -144,6 +165,8 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+       
 
         # print(self.possible_move_per_robot)
     #Get the move with the color and the direction      
@@ -245,6 +268,7 @@ class Grid(object):
         self.add_status(Color.YELLOW, 4, 7)
         self.add_status(Color.GREEN, 5, 12)
         self.actualize_robot_position()
+        self.initial_position = self.position_robot
         self.update_super_goal()
 
     #Random choice of the mission to be completed
@@ -258,7 +282,13 @@ class Grid(object):
     
     #Use to display the board
     def display(self, screen):
-        
+        pygame.draw.rect(screen, (255, 255, 255), (5, 10, 50, 30))
+        #Screen count move 
+        police = pygame.font.Font(None, 36)
+
+        text = police.render(str(self.count_move), True, (0,0,0))
+        screen.blit(text, (5,10))
+        screen.blit(pygame.image.load("../Asset/reset_button.png"),(760,5))
         for i in range(16):
             for j in range(16):
 
@@ -308,7 +338,7 @@ class Grid(object):
             for mission in mission_tab:
                 if(self.grid[mission[0],mission[1]].status.color == Color.EMPTY):
                     screen.blit(pygame.image.load(ASSET_MAP.get((mission[2],mission[3]),"empty")),(mission[1]*45+45,mission[0]*45+45))
-           
+            
  # Creation of the fourth plates        
 _plate1 = Plate()
 # _plate1.wall_generation(0)
