@@ -1,5 +1,7 @@
 from grid import *
-   
+from ia import *
+
+    
 class Game:
     
     def __init__(self):
@@ -41,6 +43,7 @@ class Game:
                     x, y = pygame.mouse.get_pos()
                     x, y = (y - 40) // 45, (x - 40) // 45
 
+
                     if self.in_menu:
                         if 6 <= x <= 7 and 5 <= y <= 10:
                             self.in_menu = False
@@ -51,6 +54,7 @@ class Game:
                     else:
                         self.grid.reset(x, y)
                         self.grid.move(x, y)
+
 
             if self.in_menu:
                 self.display_menu()
