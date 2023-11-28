@@ -1,5 +1,5 @@
 from grid import *
-from ia import *
+
 
     
 class Game:
