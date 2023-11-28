@@ -1,5 +1,6 @@
 import numpy as np
 import random as rd
+import time
 import pygame 
 import sys
 import time as t

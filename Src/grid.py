@@ -2,6 +2,7 @@ from plate import *
  
 HEIGHT = 800
 WIDTH = 800 
+
 class Grid(object):
 
     def __init__(self):
@@ -193,7 +194,7 @@ class Grid(object):
             k = i
             l = j
             while l < 15 :
-                if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[1] == False) and (self.grid[k,l+1].wall[3] == False) and (self.grid[k,l+1].status.color == Color.EMPTY)): 
                     l = l+1   
                 else:
                     break
@@ -203,7 +204,7 @@ class Grid(object):
             k = i
             l = j    
             while l > 0 :
-                if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[3] == False) and (self.grid[k,l-1].wall[1] == False) and (self.grid[k,l-1].status.color == Color.EMPTY)): 
                     l = l-1   
                 else:
                     break
@@ -213,7 +214,7 @@ class Grid(object):
             k = i
             l = j 
             while k > 0 :
-                if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[0] == False) and (self.grid[k-1,l].wall[2] == False) and (self.grid[k-1,l].status.color == Color.EMPTY)): 
                     k = k-1   
                 else:
                     break
@@ -223,7 +224,7 @@ class Grid(object):
             k = i
             l = j 
             while k < 15 :
-                if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[2] == False) and (self.grid[k+1,l].wall[0] == False) and (self.grid[k+1,l].status.color == Color.EMPTY)): 
                     k = k+1   
                 else:
                     break
@@ -339,7 +340,7 @@ class Grid(object):
                 if(self.grid[mission[0],mission[1]].status.color == Color.EMPTY):
                     screen.blit(pygame.image.load(ASSET_MAP.get((mission[2],mission[3]),"empty")),(mission[1]*45+45,mission[0]*45+45))
             
- # Creation of the fourth plates        
+ # Creation of the fourth plates, just for testing reason, will be replaced by real random generation      
 _plate1 = Plate()
 # _plate1.wall_generation(0)
 #Double protection
