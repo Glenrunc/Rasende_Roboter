@@ -26,53 +26,75 @@ def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_
     start_time = time.time()
     
     while (len(fifo_state) != 0 and temp_coordinate != coordinate_mission):
-
-        #print("processing...............................")
         process_node = fifo_state.popleft()
         visited_state.append(process_node.state)
         temp_coordinate = process_node.state[color_mission]
-
-        if temp_coordinate == coordinate_mission:
-            print("We have found a path")
-            print(process_node.state)
-            print('\n')
-            print(color_mission)
-            print('\n')
-            print(coordinate_mission)
-            path = find_final_path(process_node)
-            return path
     
-        next_state(process_node,empty_grid,fifo_state,visited_state)
+        is_find,node_find = next_state(process_node,empty_grid,fifo_state,visited_state,color_mission,coordinate_mission)
+        if is_find:
+            print("We have found a path")
+            print("Final node: ",process_node.state)
+            print("Mission color: ",color_mission)
+            print("Mission color: ", coordinate_mission)
+            path = find_final_path(node_find)
+            end_time = time.time() 
+            elapsed_time = end_time - start_time
+            print(f"Time elapsed: {elapsed_time} seconds")
+            print(f"Number of state that have been visited:{len(visited_state)}")
+            print(f"State/s: {len(visited_state) / elapsed_time:.0f}")
+            return path
+        
     if len(fifo_state) != 0:
         return None
-    end_time = time.time()  
-    elapsed_time = end_time - start_time
-    print(f"Time elapsed: {elapsed_time} seconds")
+ 
+    
 
 
 
 def add_status_empty_grid(grid:Grid,status:dict):
     for color in status:
         grid.add_status(color,status[color][0],status[color][1])
+    grid.actualize_robot_position()
         
 
 
 def clean_all_status(grid:Grid,status:dict):
     for color in status:
-        grid.clean_status(status[color][0],status[color][1])
-        
-    grid.actualize_robot_position()
+        grid.clean_status(status[color][0],status[color][1])    
+    grid.actualize_robot_position()    
 
 
-def is_already_visited(status,visited_state:deque,color:Color):
+
+def is_already_visited(status,visited_state:deque,color_:Color):
+
+    #TODO Check if the generate state is the result ! CHECK AT GENERATION 
+    
     for state in visited_state:
-        if state[color] == status[color]:
+        if state[color_] == status[color_]:
             return True
     return False
+    for state in visited_state:
+        if state[color_] == status[color_]:
+
+            new_state_visited = {color: value for color, value in state.items() if color != color_}
+            new_state_proceed = {color: value for color, value in status.items() if color != color_}
+            list_v = list(new_state_visited.items())
+            list_p = list(new_state_proceed.items())
+            result_list_v = [(x, y) for color, (x, y) in list_v]
+            result_list_p = [(x, y) for color, (x, y) in list_p]
+            is_equal = set(result_list_v) == set(result_list_p)
+          
+            if is_equal:
+                return True
+           
+                  
+    return False
     
-    
-def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:deque):
-    
+
+
+def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:deque,color_mission:Color,coordinate_mission:tuple):
+
+    test_goal = False    
     add_status_empty_grid(empty_grid,node_state.state)
 
     empty_grid.possible_move()
@@ -86,9 +108,12 @@ def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:de
             if not is_already_visited(status_temp,visited_state,color):
                 temp_node = Node(status_temp, node_state)
                 fifo_state.append(temp_node)
+                if status_temp[color_mission] == coordinate_mission:
+                    test_goal = True
+                    return test_goal, temp_node
 
     clean_all_status(empty_grid,node_state.state)
-
+    return test_goal,None
 
 def find_final_path(final_node:Node):
 

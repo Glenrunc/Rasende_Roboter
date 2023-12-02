@@ -28,6 +28,7 @@ class Case(object):
         self.status = _status
         self.heuristique = -1
         
+        
     def empty(self):
         self.wall = False
     

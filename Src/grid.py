@@ -61,6 +61,7 @@ class Grid(object):
             self.update_super_goal()
             self.initial_position = self.position_robot
             self.count_move = 0
+    
     #reset the round
     def reset(self,i,j):
         if (i == -1 and j==16):
@@ -71,53 +72,43 @@ class Grid(object):
             for robot in self.initial_position:
                 self.add_status(robot,self.initial_position.get(robot)[0],self.initial_position.get(robot)[1])
             self.actualize_robot_position()
+    
+    def print_way(self,i,j):
+
+        self.possible_move()
+        for couple in self.possible_move_per_robot[self.grid[i,j].status.color]:
+            for direction,coordinate in couple.items():
+                k = i
+                l = j
+                if direction == 'RIGHT':
+                    while l < coordinate[1]:
+                        self.grid[i,l+1].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        l=l+1
+                if direction == 'LEFT':
+                    while l > coordinate[1]:
+                        self.grid[i,l-1].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        l=l-1
+                if direction == 'UP':
+                    while k > coordinate[0]:
+                        self.grid[k-1,j].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        k=k-1
+                if direction == 'DOWN':
+                    while k < coordinate[0]:
+                        self.grid[k+1,j].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        k=k+1
+
 
     def move(self,i,j):
         # self.possible_move()
         if 0 <= i < 16 and 0 <= j < 16:
             #IF the player wants to clean a way 
-            if (self.grid[i,j].color == (255,255,255)) & (self.grid[i,j].status.color == Color.EMPTY):
+            if (self.grid[i,j].color == (255,255,255)) and (self.grid[i,j].status.color == Color.EMPTY):
                 self.clean_color_grid()
             #When The player click on a robot , usefull to indicate the possible way  
             if (self.grid[i,j].status.color != Color.EMPTY):
                 self.clean_color_grid()
-                #verification move
-                # To the right
-                k = i
-                l = j
-                while l < 15 :
-                    if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)):
-                        self.grid[k,l+1].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        l = l+1   
-                    else:
-                        break
-                # To the left
-                k = i
-                l = j    
-                while l > 0 :
-                    if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)):
-                        self.grid[k,l-1].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        l = l-1   
-                    else:
-                        break
-                # To the up 
-                k = i
-                l = j 
-                while k > 0 :
-                    if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)):
-                        self.grid[k-1,l].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        k = k-1   
-                    else:
-                        break
-                #To the down 
-                k = i
-                l = j 
-                while k < 15 :
-                    if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)):
-                        self.grid[k+1,l].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        k = k+1   
-                    else:
-                        break
+                self.possible_move()
+                self.print_way(i,j)
             #MOVE 
             if(self.grid[i,j].color != (255,255,255)):
 
@@ -171,6 +162,7 @@ class Grid(object):
        
 
         # print(self.possible_move_per_robot)
+
     #Get the move with the color and the direction      
     def get_move(self, color, direction):
         self.possible_move()
@@ -185,7 +177,7 @@ class Grid(object):
     def possible_move(self):
 
         self.actualize_robot_position()
-        self.possible_move_per_robot = {}
+        self.possible_move_per_robot = {} #{<Color.BLUE: 3>: [{'RIGHT': (2, 5)}, {'LEFT': (2, 0)}, {'UP': (1, 1)}, {'DOWN': (5, 1)}], <Color.RED: 4>: [{'RIGHT': (0, 3)}, {'LEFT': (0, 0)}, {'DOWN': (1, 1)}], <Color.GREEN: 2>: [{'RIGHT': (5, 15)}, {'LEFT': (5, 7)}, {'UP': (0, 12)}, {'DOWN': (6, 12)}], <Color.YELLOW: 1>: [{'RIGHT': (4, 14)}, {'LEFT': (4, 3)}, {'UP': (0, 7)}, {'DOWN': (5, 7)}]}
         color_robot = [Color.BLUE,Color.RED,Color.GREEN,Color.YELLOW]
 
         for robot in color_robot:
