@@ -27,6 +27,7 @@ class Case(object):
         self.wall = np.array([up,right,down,left])
         self.status = _status
         
+        
     def empty(self):
         self.wall = False
     

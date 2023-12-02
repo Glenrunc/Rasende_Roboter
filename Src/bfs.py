@@ -51,23 +51,25 @@ def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_
 def add_status_empty_grid(grid:Grid,status:dict):
     for color in status:
         grid.add_status(color,status[color][0],status[color][1])
+    grid.actualize_robot_position()
         
 
 
 def clean_all_status(grid:Grid,status:dict):
     
     for color in status:
-        grid.clean_status(status[color][0],status[color][1])        
+        grid.clean_status(status[color][0],status[color][1])    
+    grid.actualize_robot_position()    
 
 
 def is_already_visited(status,visited_state:deque,color_:Color):
 
     #TODO Check if the generate state is the result ! CHECK AT GENERATION 
-
-    # for state in visited_state:
-    #     if state[color_] == status[color_]:
-    #         return True
-    # return False
+    
+    for state in visited_state:
+        if state[color_] == status[color_]:
+            return True
+    return False
     for state in visited_state:
         if state[color_] == status[color_]:
 
