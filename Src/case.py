@@ -26,6 +26,7 @@ class Case(object):
         self.color= _color
         self.wall = np.array([up,right,down,left])
         self.status = _status
+        self.heuristique = -1
         
     def empty(self):
         self.wall = False

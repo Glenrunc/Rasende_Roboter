@@ -15,7 +15,9 @@ class Game:
         self.grid.grid_final()
         self.in_menu = True
         
-        # print(self.grid.position_robot)
+        self.grid.initHeur()
+        self.grid.printHeur()
+        #print(self.grid.position_robot)
         # self.grid.possible_move()
         # self.grid.get_position(Color.BLUE,'DOWN')
         # print(self.grid.possible_move_per_robot)

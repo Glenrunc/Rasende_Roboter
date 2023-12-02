@@ -1,4 +1,5 @@
 from grid import *
+import numpy as np
 from collections import deque #Usefull for FIFO in BFS
 
 class Node:
@@ -7,22 +8,26 @@ class Node:
 
         #state -> Will be representing by a list of the position of the robot
         #father_node-> Will be the father node
-
         self.state = _state
         self.father_node = _father_node
 
 def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_mission:tuple):
-
     fifo_state = deque()
     visited_state = deque()
-    
+    #empty_grid.initHeur()
+    #empty_grid.printHeur()
+    empty_grid.add_status(Color.RED, 0, 1)
+    empty_grid.add_status(Color.BLUE, 2, 1)
+    empty_grid.add_status(Color.YELLOW, 4, 7)
+    empty_grid.add_status(Color.GREEN, 5, 12)
+    empty_grid.actualize_robot_position()
     fifo_state.append(initial_node_state)
     temp_coordinate = initial_node_state.state[color_mission]
     start_time = time.time()
     
     while (len(fifo_state) != 0 and temp_coordinate != coordinate_mission):
 
-        print("processing...............................")
+        #print("processing...............................")
         process_node = fifo_state.popleft()
         visited_state.append(process_node.state)
         temp_coordinate = process_node.state[color_mission]
@@ -53,9 +58,10 @@ def add_status_empty_grid(grid:Grid,status:dict):
 
 
 def clean_all_status(grid:Grid,status:dict):
-    
     for color in status:
-        grid.clean_status(status[color][0],status[color][1])        
+        grid.clean_status(status[color][0],status[color][1])
+        
+    grid.actualize_robot_position()
 
 
 def is_already_visited(status,visited_state:deque,color:Color):
@@ -94,3 +100,5 @@ def find_final_path(final_node:Node):
         father_node = father_node.father_node    
 
     return list_state
+
+

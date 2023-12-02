@@ -1,4 +1,5 @@
 from plate import *
+
  
 HEIGHT = 800
 WIDTH = 800 
@@ -174,7 +175,7 @@ class Grid(object):
     def get_move(self, color, direction):
         self.possible_move()
         color_data = self.possible_move_per_robot.get(color)
-        for  data in color_data:
+        for data in color_data:
             for dir in data:
                 if dir == direction:
                     return data[dir]
@@ -209,7 +210,7 @@ class Grid(object):
                 else:
                     break
             if(l!=j):
-                self.possible_move_per_robot[robot].append({"LEFT":(k,l)})            
+                self.possible_move_per_robot[robot].append({"LEFT":(k,l)})              
             # To the up 
             k = i
             l = j 
@@ -232,6 +233,86 @@ class Grid(object):
                 self.possible_move_per_robot[robot].append({"DOWN":(k,l)})        
 
       
+   
+    
+    def initHeur(self):
+        self.add_status(Color.RED, 7, 7)
+        self.add_status(Color.BLUE, 7, 8)
+        self.add_status(Color.GREEN, 8, 8)
+        self.actualize_robot_position()
+        
+        robot=Color.YELLOW
+        cible = self.goal_coordinate
+    #on met l'emplacement de la cible à 0
+        self.grid[cible[0],cible[1]].heuristique=0
+        
+    #emplacement de départ
+        p_fictif=[cible[0],cible[1]]
+        self.grid[p_fictif[0],p_fictif[1]].heuristique=0
+        a_traiter=[]
+        a_traiter.append(p_fictif)
+        
+        while(a_traiter!=[]):
+            p_fictif=a_traiter[0]
+            value=self.grid[p_fictif[0],p_fictif[1]].heuristique +1
+            self.add_status(robot, p_fictif[0], p_fictif[1]) #on met le robot sur la case
+            self.actualize_robot_position()
+            self.possible_move()
+            coor=self.get_move(robot,'UP')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == -1 ):
+                    up=p_fictif[0]-1
+                    while (up >= coor[0]):
+                        temp=[up,p_fictif[1]]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        up=up-1
+            coor=self.get_move(robot,'DOWN')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                    down=p_fictif[0]+1
+                    while (down <= coor[0]):
+                     
+                        temp=[down,p_fictif[1]]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        down=down+1
+            coor=self.get_move(robot,'LEFT')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                    left=p_fictif[1]-1
+                    while (left >= coor[1]):
+                       
+                        temp=[p_fictif[0],left]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        left=left-1
+            coor=self.get_move(robot,'RIGHT')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                    right=p_fictif[1]+1
+                  
+                    while (right <= coor[1]):
+                      
+                        temp=[p_fictif[0],right]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        right=right+1
+            self.clean_status(p_fictif[0], p_fictif[1])
+            a_traiter.pop(0)
+    
+    
+    
+    def printHeur(self):
+        tab = np.zeros((16,16))
+        for i,ligne in enumerate(self.grid):
+            for j,element in enumerate(ligne):
+                tab[i][j]=element.heuristique
+        print(tab)
+        
+            
+           
+
 
     #After a move, the robot position needs to be update                        
     def actualize_robot_position(self):
