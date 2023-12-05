@@ -1,5 +1,6 @@
 from grid import *
 from bfs import  *
+from a_star import *
 
     
 class Game:
@@ -23,6 +24,19 @@ class Game:
         # self.grid.possible_move()
         # self.grid.get_position(Color.BLUE,'DOWN')
         # print(self.grid.possible_move_per_robot)
+
+
+        # TESTS IA
+        goal_position = self.grid.goal_coordinate
+        color_robot =self.grid.color_goal
+        print("position du robot", color_robot)
+        print("position à atteindre", goal_position)
+
+        robot_position = self.grid.position_robot[color_robot]
+        #chemin = BFS(self.grid,robot_position, goal_position)
+        #iaSolution(self.grid, color_robot, goal_position)
+
+        test(self.grid)
 
 
     def display_menu(self):
