@@ -1,5 +1,6 @@
 import numpy as np
 import random as rd
+import time
 import pygame 
 import sys
 import time as t
@@ -25,6 +26,8 @@ class Case(object):
         self.color= _color
         self.wall = np.array([up,right,down,left])
         self.status = _status
+        self.heuristique = -1
+        
         
     def empty(self):
         self.wall = False
