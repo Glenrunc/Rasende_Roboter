@@ -1,5 +1,5 @@
 from grid import *
-from ia import *
+from a_star import *
 
     
 class Game:
@@ -25,7 +25,7 @@ class Game:
 
         robot_position = self.grid.position_robot[color_robot]
         #chemin = BFS(self.grid,robot_position, goal_position)
-
+        #iaSolution(self.grid, color_robot, goal_position)
 
         test(self.grid)
 

@@ -219,7 +219,7 @@ class Grid(object):
         k = i
         l = j
         while l < 15 :
-            if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)): 
+            if ((self.grid[k,l].wall[1] == False)): 
                 l = l+1   
             else:
                 break
@@ -229,7 +229,7 @@ class Grid(object):
         k = i
         l = j    
         while l > 0 :
-            if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)): 
+            if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)): 
                 l = l-1   
             else:
                 break
@@ -239,7 +239,7 @@ class Grid(object):
         k = i
         l = j 
         while k > 0 :
-            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)): 
+            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)): 
                 k = k-1   
             else:
                 break
@@ -249,7 +249,7 @@ class Grid(object):
         k = i
         l = j 
         while k < 15 :
-            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)): 
+            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False)): 
                 k = k+1   
             else:
                 break

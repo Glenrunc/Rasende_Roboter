@@ -61,6 +61,13 @@ def test(grid):
         print("move possible: ", i)
         possible_next = grid.possible_move_goal(i)
         print("move possible next: ", possible_next)
+        
+
+        #if((grid[g[0],g[1]].wall[3] == True) & (grid[g[0],g[1]-1].wall[3] == True)):
+         #   print("mur gauche droite")
+
+        #if((grid[g[0],g[1]].wall[1] == True) & (grid[g[0],g[1]+1].wall[3] == True)):
+            #print("mur haut bas")
         for j in possible_next:
             if (j != grid.goal_coordinate and j != i):
                 if (i[0]==j[0]):
@@ -83,9 +90,9 @@ def test(grid):
                         for k in range(abs(diff)):
                             if (diff>0):
                                 k=-k
-                            temp = (i[0]-diff-k,i[1])
+                            temp = (i[0]-diff+k,i[1])
                             objectif_secondaire.append(temp)
-    print(objectif_secondaire)
+    print("OCJECTIF SECONDAIRE : ", objectif_secondaire)
     color_used = [Color.EMPTY]
     for o in objectif_secondaire:
         available_colors = [c for c in Color if c != grid.color_goal and c not in color_used]
@@ -131,3 +138,57 @@ def a_star_search(grid, start, color, goal):
 
     print(Closed)
     print("Vous avez gagné ! nombre de coups :", len(Closed))
+
+
+def iaSolution(grid, color, goal):
+    closed=[]
+    open=[]
+    open.append(grid)
+    compteur=0
+    while (open.count!=0 and compteur<3000):
+        u=open[0]
+        #print("je recommence avec ",u)
+        del open[0]
+        if (grid.position_robot[color]==goal):
+            print("Jeu terminé avec succès")
+            return closed
+        else:
+            #On génère les états qui peuvent être générés par u
+            children=[]
+
+            bleu=u[0]
+            jaune=u[1]
+            vert=u[2]
+            rouge=u[3]
+            #poids=u[4]+1
+            grid.possible_move()
+            #display_plateau(plateau)
+
+            for states in get_possible_coordinates_for_robot(grid,Color.BLUE):
+                grid_temp=grid
+                grid_temp.move(grid_temp.position_robot[Color.BLUE][0],grid_temp.position_robot[Color.BLUE][1])
+                grid_temp.move(states[0],states[1])
+                children.append(grid_temp)
+            for states in get_possible_coordinates_for_robot(grid, Color.YELLOW):
+                grid_temp=grid
+                grid_temp.move(grid_temp.position_robot[Color.YELLOW][0],grid_temp.position_robot[Color.YELLOW][1])
+                grid_temp.move(states[0],states[1])
+                children.append(grid_temp)
+            for states in get_possible_coordinates_for_robot(grid, Color.RED):
+                grid_temp=grid
+                grid_temp.move(grid_temp.position_robot[Color.RED][0],grid_temp.position_robot[Color.RED][1])
+                grid_temp.move(states[0],states[1])
+                children.append(grid_temp)
+            for states in get_possible_coordinates_for_robot(Color.GREEN):
+                grid_temp=grid
+                grid_temp.move(grid_temp.position_robot[Color.GREEN][0],grid_temp.position_robot[Color.GREEN][1])
+                grid_temp.move(states[0],states[1])
+                children.append(grid_temp)
+            #Pour chaque child possible on vérifie s'il est dans les listes
+            for child in children:
+                if(child not in open and child not in closed):                         ##penser à ajouter qu'il n'existe pas avec un coût inférieur
+                    open.append(child)
+            closed.append(u)
+            compteur+=1
+    return 0
+        
