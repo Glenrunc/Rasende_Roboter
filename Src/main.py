@@ -1,11 +1,10 @@
 from game import *
-from bfs import *
 
 
 
 if __name__ == "__main__" :
-    game = Game()
-    game.run()
+    # game = Game()
+    # game.run()
 
 
     grid = Grid()

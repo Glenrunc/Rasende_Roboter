@@ -12,20 +12,32 @@ class Node:
         self.father_node = _father_node
 
 def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_mission:tuple):
+
+    # pygame.init()
+    # screen = pygame.display.set_mode((HEIGHT,WIDTH))
+    # pygame.display.set_caption("Rasende Roboter")
+    # clock = pygame.time.Clock()
+    # screen.fill((255,255,255))
+    empty_grid.initHeur(initial_node_state.state)
     fifo_state = deque()
     visited_state = deque()
-    #empty_grid.initHeur()
-    #empty_grid.printHeur()
-    empty_grid.add_status(Color.RED, 0, 1)
-    empty_grid.add_status(Color.BLUE, 2, 1)
-    empty_grid.add_status(Color.YELLOW, 4, 7)
-    empty_grid.add_status(Color.GREEN, 5, 12)
-    empty_grid.actualize_robot_position()
+  
     fifo_state.append(initial_node_state)
     temp_coordinate = initial_node_state.state[color_mission]
     start_time = time.time()
     
     while (len(fifo_state) != 0 and temp_coordinate != coordinate_mission):
+
+
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        # pygame.display.flip()
+        # clock.tick(30)
+
+
+        print("Processing...")
         process_node = fifo_state.popleft()
         visited_state.append(process_node.state)
         temp_coordinate = process_node.state[color_mission]
@@ -43,6 +55,7 @@ def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_
             print(f"Number of state that have been visited:{len(visited_state)}")
             print(f"State/s: {len(visited_state) / elapsed_time:.0f}")
             return path
+        
         
     if len(fifo_state) != 0:
         return None
@@ -96,7 +109,7 @@ def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:de
 
     test_goal = False    
     add_status_empty_grid(empty_grid,node_state.state)
-
+    # empty_grid.display(screen)
     empty_grid.possible_move()
     for color,moves in empty_grid.possible_move_per_robot.items():
         # print(color)
@@ -114,6 +127,8 @@ def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:de
 
     clean_all_status(empty_grid,node_state.state)
     return test_goal,None
+
+
 
 def find_final_path(final_node:Node):
 

@@ -1,5 +1,5 @@
 from grid import *
-
+from bfs import  *
 
     
 class Game:
@@ -14,8 +14,10 @@ class Game:
         self.grid = Grid()  
         self.grid.grid_final()
         self.in_menu = True
-        
-        self.grid.initHeur()
+        self.start_position_robot = self.grid.position_robot
+        clean_all_status(self.grid,self.start_position_robot)
+        self.grid.initHeur(self.start_position_robot)
+
         self.grid.printHeur()
         #print(self.grid.position_robot)
         # self.grid.possible_move()

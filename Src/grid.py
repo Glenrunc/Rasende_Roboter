@@ -1,6 +1,5 @@
 from plate import *
 
- 
 HEIGHT = 800
 WIDTH = 800 
 
@@ -38,7 +37,7 @@ class Grid(object):
     def clean_status(self,i,j):
         player = Player(Color.EMPTY)
         self.grid[i,j].status = player
-
+    
     def clean_color_grid(self):
         for i in range(16):
             for j in range(16):
@@ -227,7 +226,7 @@ class Grid(object):
       
    
     
-    def initHeur(self):
+    def initHeur(self,robot_position):
         self.add_status(Color.RED, 7, 7)
         self.add_status(Color.BLUE, 7, 8)
         self.add_status(Color.GREEN, 8, 8)
@@ -291,11 +290,21 @@ class Grid(object):
                         self.grid[temp[0],temp[1]].heuristique=value
                         right=right+1
             self.clean_status(p_fictif[0], p_fictif[1])
+                
+
             a_traiter.pop(0)
+        self.clean_status(7,7)
+        self.clean_status(7,8)
+        self.clean_status(8,8)
+        for color in robot_position:  
+            self.add_status(color,robot_position[color][0],robot_position[color][1])
+        self.actualize_robot_position()
+
     
     
     
     def printHeur(self):
+        print("Here is the heuristic table usefull for BFS and A*")
         tab = np.zeros((16,16))
         for i,ligne in enumerate(self.grid):
             for j,element in enumerate(ligne):
