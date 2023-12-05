@@ -45,16 +45,7 @@ Si un joueur à une solution, il fait signe et donne sa réponse. Si elle est bo
 \subsection{Choix et explications de notre implémentation}
 Le but du projet étant d'implémenter différents algorithmes de résolutions, il nous ait paru évident de modifier certains points du jeu.\\\\Dans la version physique, le jeu se joue à plusieurs, chacun pour soi. Nous avons décider que notre jeu pouvait se jouer seul ou à plusieurs contre les algorithmes de résolutions. Ainsi le but de chaque partie est de résoudre le problème en moins de coup possible certes, mais surtout en moins de coup que l'intelligence artificielle.\\\\Lorsque qu'on arrive sur le jeu, on peut choisir le nombre de  manches que l'on veut jouer. A la fin de celles-ci on compte le nombre de manches gagnées contre l'IA. Si ce nombre est supérieur à celui du nombre de manche perdu, on gagne la partie, sinon on perd.\\\\On peut également choisir de "Reset" la manche si on voit que l'on bloque. Un mode revisionnage à été implémenté pour voir les coups effectués par l'IA. Ce mode est uniquement disponible lorsque la manche est terminée. Enfin un boutton abandon permet de passer à la manche suivante et met automatiquement l'IA vainqueur.
 \section{Approche orientée objet}
-\subsection{Différentes classes implémentées}
-Maintenant que tout est clair. Nous pouvons plonger dans l'explication de notre code. Python étant un langage orienté objet. Toute notre implémentation réside dans ses concepts fondamentaux.\\\\
-Mais avant de passer à l'élaboration de nos algorithmes de résolution il nous ait paru important de décrire les différentes classes utiles pour le jeu. 
-\subsubsection{Classe Case}
-La plateau est composé de 256 cases. Une case peut accueillir 4 murs respectivement sur ses 4 directions (nord, sud, est, ouest). En réalité une case pourra au plus contenir deux murs contigus.\\\\De plus une case possède une couleur (rouge, bleu, jaune,vert) qui servira à un indiquer les différentes directions pour un robot. Enfin elle possède un status qui est une autre classe définissant la présence d'un robot ou non.\\\\
-\begin{figure}[h]
-  \centering  
-  \includegraphics[width=0.4\textwidth]{deplacement.png}  
-  \caption{Image du plateau de jeu "Rasende Roboter"} 
-  \label{fig:Plateau}  
-\end{figure}
+Pour ce qui est de l'implémentation du jeu uniquement, nous vous détailleront certaines méthodes servant aux algorithmes de résolution. Mais pour le reste, nous avons décidé de faire uniquement un diagramme de classe pour rendre plus visuel nos explications. 
+
 
 \end{document}
