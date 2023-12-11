@@ -311,6 +311,9 @@ class Grid(object):
             for j,element in enumerate(ligne):
                 tab[i][j]=element.heuristique
         print(tab)
+
+    def getHeur(self,position):
+        return self.grid[position[0],position[1]].heuristique
         
             
            

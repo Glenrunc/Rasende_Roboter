@@ -27,16 +27,17 @@ class Game:
 
 
         # TESTS IA
-        goal_position = self.grid.goal_coordinate
-        color_robot =self.grid.color_goal
-        print("position du robot", color_robot)
-        print("position à atteindre", goal_position)
+        # goal_position = self.grid.goal_coordinate
+        # color_robot =self.grid.color_goal
+        # print("position du robot", color_robot)
+        # print("position à atteindre", goal_position)
 
-        robot_position = self.grid.position_robot[color_robot]
+        # robot_position = self.grid.position_robot[color_robot]
+
+        # a_star_search(self.grid,robot_position, color_robot,goal_position)
         #chemin = BFS(self.grid,robot_position, goal_position)
         #iaSolution(self.grid, color_robot, goal_position)
-
-        test(self.grid)
+        # test(self.grid)
 
 
     def display_menu(self):

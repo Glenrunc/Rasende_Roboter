@@ -12,48 +12,49 @@ def get_possible_coordinates_for_robot(self, target_robot):
     return possible_coordinates
 
 
-def BFS(grid,initial_state, final_state):
-    file = deque([[initial_state]])
-    vu = set([initial_state])
-    while file:
-        chemin = file.popleft()
-        dernier_état = chemin[-1]
-        if dernier_état == final_state:
-            return chemin
-        print("Etat : ",dernier_état)
-        grid.possible_move()
-        print("Possibilitées :")
-        for voisin in get_possible_coordinates_for_robot(grid, Color.RED):
-            #robot_position = grid.position_robot[Color.RED]
-            #print("Position du robot : ",robot_position)
-            #grid.move(robot_position[0],robot_position[1])
-            #grid.move(dernier_état[0],dernier_état[1])
+# def BFS(grid,initial_state, final_state):
+#     file = deque([[initial_state]])
+#     vu = set([initial_state])
+#     while file:
+#         chemin = file.popleft()
+#         dernier_état = chemin[-1]
+#         if dernier_état == final_state:
+#             return chemin
+#         print("Etat : ",dernier_état)
+#         grid.possible_move()
+#         print("Possibilitées :")
+#         for voisin in get_possible_coordinates_for_robot(grid, Color.RED):
+#             #robot_position = grid.position_robot[Color.RED]
+#             #print("Position du robot : ",robot_position)
+#             #grid.move(robot_position[0],robot_position[1])
+#             #grid.move(dernier_état[0],dernier_état[1])
 
-            print(voisin)
-            if voisin not in vu:
-                grid.move(dernier_état[0],dernier_état[1])
-                grid.move(voisin[0],voisin[1])
-                vu.add(voisin)
-                file.append(chemin + [voisin])
-                grid.possible_move()
+#             print(voisin)
+#             if voisin not in vu:
+#                 grid.move(dernier_état[0],dernier_état[1])
+#                 grid.move(voisin[0],voisin[1])
+#                 vu.add(voisin)
+#                 file.append(chemin + [voisin])
+#                 grid.possible_move()
             
 
-def heuristic(a, b):
-    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+def heuristic(grid, a, b):
+    grid.initHeur(grid.position_robot)
+    return (abs(a[0] - b[0]) + abs(a[1] - b[1]))
 
-def add_to_open(Open, state, goal):
-    state_h = heuristic(state, goal)
+def add_to_open(grid, Open, state, goal):
+    state_h = heuristic(grid, state, goal)
     for i in range(len(Open)):
         if state == Open[i]:
             return False
-        elif state_h < heuristic(Open[i], goal):
+        elif state_h < heuristic(grid, Open[i], goal):
             Open.insert(i, state)
             return True
     Open.append(state)
     return True
 
 
-def test(grid):
+def with_secondary_goal(grid):
     possible_move = grid.possible_move_goal(grid.goal_coordinate)
     defaut = 4
     objectif_secondaire = []
@@ -101,7 +102,7 @@ def test(grid):
         print("Couleur objectif secondaire : ",color)
         a_star_search(grid, grid.position_robot[color], color, o)
     print("Objectif principal !")
-    a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate)
+    return a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate)
 
         
     
@@ -110,8 +111,9 @@ def a_star_search(grid, start, color, goal):
     Open = []
     Closed = []
     etat = start
-    add_to_open(Open, etat, goal)
+    add_to_open(grid, Open, etat, goal)
     iterations = 0
+
 
     while etat != goal:
         if iterations > 1000:
@@ -121,7 +123,7 @@ def a_star_search(grid, start, color, goal):
         grid.possible_move()
         get_possible_coordinates_for_robot(grid, color)
         for voisin in get_possible_coordinates_for_robot(grid, color):
-            add_to_open(Open, voisin, goal)
+            add_to_open(grid, Open, voisin, goal)
             #print(Open)
         
         
@@ -137,7 +139,9 @@ def a_star_search(grid, start, color, goal):
         iterations += 1
 
     print(Closed)
+    
     print("Vous avez gagné ! nombre de coups :", len(Closed))
+    return Closed
 
 
 def iaSolution(grid, color, goal):
