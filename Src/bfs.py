@@ -13,11 +13,11 @@ class Node:
 
 def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_mission:tuple):
 
-    # pygame.init()
-    # screen = pygame.display.set_mode((HEIGHT,WIDTH))
-    # pygame.display.set_caption("Rasende Roboter")
-    # clock = pygame.time.Clock()
-    # screen.fill((255,255,255))
+    pygame.init()
+    screen = pygame.display.set_mode((HEIGHT,WIDTH))
+    pygame.display.set_caption("Rasende Roboter")
+    clock = pygame.time.Clock()
+    screen.fill((255,255,255))
     empty_grid.initHeur(initial_node_state.state)
     fifo_state = deque()
     visited_state = deque()
@@ -29,12 +29,12 @@ def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_
     while (len(fifo_state) != 0 and temp_coordinate != coordinate_mission):
 
 
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         pygame.quit()
-        #         sys.exit()
-        # pygame.display.flip()
-        # clock.tick(30)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        pygame.display.flip()
+        clock.tick(30)
 
 
         print("Processing...")
@@ -42,7 +42,7 @@ def BFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coordinate_
         visited_state.append(process_node.state)
         temp_coordinate = process_node.state[color_mission]
     
-        is_find,node_find = next_state(process_node,empty_grid,fifo_state,visited_state,color_mission,coordinate_mission)
+        is_find,node_find = next_state(process_node,empty_grid,fifo_state,visited_state,color_mission,coordinate_mission,screen)
         if is_find:
             print("We have found a path")
             print("Final node: ",process_node.state)
@@ -105,11 +105,11 @@ def is_already_visited(status,visited_state:deque,color_:Color):
     
 
 
-def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:deque,color_mission:Color,coordinate_mission:tuple):
+def next_state(node_state:Node,empty_grid:Grid,fifo_state:deque,visited_state:deque,color_mission:Color,coordinate_mission:tuple,screen):
 
     test_goal = False    
     add_status_empty_grid(empty_grid,node_state.state)
-    # empty_grid.display(screen)
+    empty_grid.display(screen)
     empty_grid.possible_move()
     for color,moves in empty_grid.possible_move_per_robot.items():
         # print(color)
