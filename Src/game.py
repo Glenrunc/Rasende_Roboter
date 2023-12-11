@@ -1,6 +1,5 @@
 from grid import *
 from bfs import  *
-from a_star import *
 
     
 class Game:
