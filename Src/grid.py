@@ -8,7 +8,7 @@ class Grid(object):
     def __init__(self):
         self.grid = np.array([[Case() for _ in range(16)] for _ in range(16)])
         self.count_move = 0
-
+    
     def reset_move(self):
         self.count_move = 0 
 
@@ -252,7 +252,7 @@ class Grid(object):
             self.possible_move()
             coor=self.get_move(robot,'UP')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1 ):
+                if (self.grid[coor[0],coor[1]].heuristique == 30 ):
                     up=p_fictif[0]-1
                     while (up >= coor[0]):
                         temp=[up,p_fictif[1]]
@@ -261,7 +261,7 @@ class Grid(object):
                         up=up-1
             coor=self.get_move(robot,'DOWN')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     down=p_fictif[0]+1
                     while (down <= coor[0]):
                      
@@ -271,7 +271,7 @@ class Grid(object):
                         down=down+1
             coor=self.get_move(robot,'LEFT')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     left=p_fictif[1]-1
                     while (left >= coor[1]):
                        
@@ -281,7 +281,7 @@ class Grid(object):
                         left=left-1
             coor=self.get_move(robot,'RIGHT')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     right=p_fictif[1]+1
                   
                     while (right <= coor[1]):
@@ -330,8 +330,27 @@ class Grid(object):
         j = goal_position[1]
         k = i
         l = j
+        
+        while k > 0 :
+            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)): 
+                k = k-1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))            
+        #To the down 
+        k = i
+        l = j 
+        while k < 15 :
+            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False)): 
+                k = k+1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))
+        #To the top   
         while l < 15 :
-            if ((self.grid[k,l].wall[1] == False)): 
+            if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False)): 
                 l = l+1   
             else:
                 break
@@ -350,24 +369,6 @@ class Grid(object):
         # To the up 
         k = i
         l = j 
-        while k > 0 :
-            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)): 
-                k = k-1   
-            else:
-                break
-        if(k != i):
-            possible_move.append((k,l))            
-        #To the down 
-        k = i
-        l = j 
-        while k < 15 :
-            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False)): 
-                k = k+1   
-            else:
-                break
-        if(k != i):
-            possible_move.append((k,l))   
-
         return possible_move
 
 
