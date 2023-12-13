@@ -252,7 +252,7 @@ class Grid(object):
             self.possible_move()
             coor=self.get_move(robot,'UP')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1 ):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     up=p_fictif[0]-1
                     while (up >= coor[0]):
                         temp=[up,p_fictif[1]]
@@ -261,7 +261,7 @@ class Grid(object):
                         up=up-1
             coor=self.get_move(robot,'DOWN')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     down=p_fictif[0]+1
                     while (down <= coor[0]):
                      
@@ -271,7 +271,7 @@ class Grid(object):
                         down=down+1
             coor=self.get_move(robot,'LEFT')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     left=p_fictif[1]-1
                     while (left >= coor[1]):
                        
@@ -281,7 +281,7 @@ class Grid(object):
                         left=left-1
             coor=self.get_move(robot,'RIGHT')
             if coor is not None :
-                if (self.grid[coor[0],coor[1]].heuristique == -1):
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
                     right=p_fictif[1]+1
                   
                     while (right <= coor[1]):
@@ -300,9 +300,7 @@ class Grid(object):
         for color in robot_position:  
             self.add_status(color,robot_position[color][0],robot_position[color][1])
         self.actualize_robot_position()
-
-    
-    
+       
     
     def printHeur(self):
         print("Here is the heuristic table usefull for BFS and A*")
