@@ -36,17 +36,37 @@ def with_secondary_goal(grid):
     defaut = 4
     objectif_secondaire = []
     list_state = []
+
+    if(grid.goal_coordinate[0] == 0 or grid.goal_coordinate[0] == 15 or grid.goal_coordinate[1] == 0 or grid.goal_coordinate[1] == 15):
+        for i in possible_move:
+            if (i != grid.goal_coordinate):
+                if (grid.goal_coordinate[0]==i[0]):
+                    diff = grid.goal_coordinate[1]-i[1]
+                    print("diff: ", diff)
+                    if (abs(diff) < defaut):
+                        objectif_secondaire.clear()
+                        defaut = abs(diff)
+                        for k in range(abs(diff)):
+                            if (diff>0):
+                                k=-k
+                            temp = (grid.goal_coordinate[0],grid.goal_coordinate[1]-diff-k)
+                            objectif_secondaire.append(temp)
+                else:
+                    diff = grid.goal_coordinate[0]-i[0]
+                    print("diff: ", diff)
+                    if (abs(diff) < defaut):
+                        objectif_secondaire.clear()
+                        defaut = abs(diff)
+                        for k in range(abs(diff)):
+                            if (diff>0):
+                                k=-k
+                            temp = (grid.goal_coordinate[0]-diff+k,grid.goal_coordinate[1])
+                            objectif_secondaire.append(temp)
+
     for i in possible_move:
         print("move possible: ", i)
         possible_next = grid.possible_move_goal(i)
         print("move possible next: ", possible_next)
-        
-
-        #if((grid[g[0],g[1]].wall[3] == True) & (grid[g[0],g[1]-1].wall[3] == True)):
-         #   print("mur gauche droite")
-
-        #if((grid[g[0],g[1]].wall[1] == True) & (grid[g[0],g[1]+1].wall[3] == True)):
-            #print("mur haut bas")
         for j in possible_next:
             if (j != grid.goal_coordinate and j != i):
                 if (i[0]==j[0]):
@@ -71,6 +91,7 @@ def with_secondary_goal(grid):
                                 k=-k
                             temp = (i[0]-diff+k,i[1])
                             objectif_secondaire.append(temp)
+    
     print("OBJECTIF SECONDAIRE : ", objectif_secondaire)
     color_used = [Color.EMPTY]
     for o in objectif_secondaire:
