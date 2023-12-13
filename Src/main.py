@@ -5,6 +5,6 @@ from game import *
 if __name__ == "__main__" :
     grid = Grid()
     game = Game(grid)
-    game.run()
-
+    level = game.menu()
+    game.run(0)
     # # pass
