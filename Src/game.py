@@ -19,8 +19,7 @@ class Game:
         self.start_position_robot = self.grid.position_robot
         clean_all_status(self.grid,self.start_position_robot)
         self.grid.initHeur(self.start_position_robot)
-        
-     
+
     def display_menu(self):
 
         self.screen.blit(pygame.image.load("../Asset/play.png"),(225,300))
