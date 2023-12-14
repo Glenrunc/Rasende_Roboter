@@ -14,11 +14,21 @@ class Game:
         self.in_menu = True
         self.in_rules_menu = False
         self.in_choice_menu = False
+        self.in_game = True
+        self.mode_review = False
         self.grid = grid  
         self.grid.grid_final()
+
+
+
         self.start_position_robot = self.grid.position_robot
         clean_all_status(self.grid,self.start_position_robot)
-        self.grid.initHeur(self.start_position_robot)
+        self.path = BFS_or_DFS(self.grid,Node(self.start_position_robot,None),self.grid.color_goal,self.grid.goal_coordinate,True)
+        # self.grid.initHeur(self.start_position_robot)
+        self.grid.actualize_robot_position()
+        clean_all_status(self.grid,self.grid.position_robot)
+        add_status_empty_grid(self.grid,self.start_position_robot)
+        self.grid.begin_path = 0
 
     def display_menu(self):
 
@@ -40,9 +50,22 @@ class Game:
         self.screen.blit(pygame.image.load("../Asset/medium.png"),(115,250))
         self.screen.blit(pygame.image.load("../Asset/easy.png"),(115,500))
         self.screen.blit(pygame.image.load("../Asset/back.png"),(0,0))
+    
+    def display_review_screen(self):
+        self.screen.blit(pygame.image.load("../Asset/show.png"),(700,0))
+
+
+    def display_mode_review(self):
+        
+        self.screen.blit(pygame.image.load("../Asset/arrow_right.png"), (500, 0))
+        self.screen.blit(pygame.image.load("../Asset/arrow_left.png"), (400, 0))
+        self.screen.blit(pygame.image.load("../Asset/red_cross.png"), (600, 0))
 
     def run(self,difficulty):
         self.screen.fill((255, 255, 255))
+       
+        if self.path != None:
+            end_path = len(self.path) - 1
 
         while True:
 
@@ -54,10 +77,64 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     x, y = pygame.mouse.get_pos()
                     x, y = (y - 40) // 45, (x - 40) // 45
+                    print(x,y)
                     self.grid.reset(x, y)
                     self.grid.move(x, y)
 
-            self.grid.display(self.screen)
+                    if self.in_game:
+                        # Light Button
+                        if x == -1 and 14 <= y <= 15:
+                            if self.path != None:
+                                self.grid.begin_path = 0
+                                self.in_game =False
+                                self.mode_review = True
+                                self.grid.actualize_robot_position()
+                                clean_all_status(self.grid,self.grid.position_robot)
+                                add_status_empty_grid(self.grid,self.start_position_robot)
+                                self.grid.display(self.screen)
+                    if self.mode_review:
+                        if x == -1 and y == 8:
+                            #Left_arrow
+                            if self.grid.begin_path - 1 >= 0:
+                                self.grid.begin_path = self.grid.begin_path - 1
+                                self.grid.actualize_robot_position()
+                                clean_all_status(self.grid, self.grid.position_robot)
+                                add_status_empty_grid(self.grid, self.path[self.grid.begin_path])
+                                self.grid.display(self.screen)
+
+                        if x == -1 and y == 10:
+                            #Right_Arrow
+                            if self.grid.begin_path + 1 <= end_path:
+                                self.grid.begin_path = self.grid.begin_path + 1
+                                self.grid.actualize_robot_position()
+                                clean_all_status(self.grid, self.grid.position_robot)
+                                add_status_empty_grid(self.grid, self.path[self.grid.begin_path])
+                                self.grid.display(self.screen)
+
+                        if x == -1 and y == 12:
+                            #RedCross
+                            self.mode_review = False
+                            self.in_game = True
+                            self.grid.actualize_robot_position()
+                            clean_all_status(self.grid, self.grid.position_robot)
+                            add_status_empty_grid(self.grid, self.start_position_robot)
+                            self.grid.display(self.screen)
+                         
+
+            if self.in_game :
+                self.screen.fill((255, 255, 255))
+                self.begin_path = 0 
+                self.grid.display(self.screen)
+                self.display_review_screen()
+
+            if self.mode_review:
+                self.screen.fill((255, 255, 255))
+
+                self.display_mode_review()
+                self.grid.clean_color_grid()
+                self.grid.display(self.screen)
+
+            
             pygame.display.flip()
             self.clock.tick(30)
 

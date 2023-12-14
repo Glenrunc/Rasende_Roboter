@@ -71,6 +71,7 @@ def BFS_or_DFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coor
                 print(f"Time elapsed: {elapsed_time} seconds")
                 print(f"Number of states that have been visited: {len(visited_state)}")
                 print(f"States/s: {len(visited_state) / elapsed_time:.0f}")
+                
                 return path
 
         if not stack_state:
@@ -134,7 +135,7 @@ def find_final_path(final_node:Node):
     while father_node != None:
         list_state.append(father_node.state)
         father_node = father_node.father_node    
-
-    return list_state
+    real_state = list_state[::-1]
+    return real_state
 
 

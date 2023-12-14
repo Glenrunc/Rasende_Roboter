@@ -8,6 +8,7 @@ class Grid(object):
     def __init__(self):
         self.grid = np.array([[Case() for _ in range(16)] for _ in range(16)])
         self.count_move = 0
+        self.begin_path = 0
     
     def reset_move(self):
         self.count_move = 0 
@@ -64,6 +65,7 @@ class Grid(object):
     #reset the round
     def reset(self,i,j):
         if (i == -1 and j==16):
+            self.begin_path=0
             self.count_move = 0
             self.clean_color_grid()
             for robot in self.position_robot:
@@ -313,11 +315,7 @@ class Grid(object):
 
     def getHeur(self,position):
         return self.grid[position[0],position[1]].heuristique
-        
-            
-           
-
-
+    
       #Get the possible move for a goal
     def possible_move_goal(self, goal_position):
         
@@ -426,8 +424,9 @@ class Grid(object):
         police = pygame.font.Font(None, 36)
 
         text = police.render(str(self.count_move), True, (0,0,0))
-        screen.blit(text, (5,10))
         screen.blit(pygame.image.load("../Asset/reset_button.png"),(760,5))
+
+        screen.blit(text, (5,10))
         for i in range(16):
             for j in range(16):
 
