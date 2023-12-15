@@ -30,7 +30,7 @@ class Game:
         # self.round_count = 0
         #Usefull to process the review mode
         self.grid.begin_path = 0
-
+        self.final_count_player = 0
 
         
 
@@ -66,16 +66,27 @@ class Game:
         self.screen.blit(pygame.image.load("../Asset/ok.png"), (600, 0))
 
     def display_screen_ending(self):
-        if self.grid.count_move< self.count_final:
-            self.screen.fill((144, 255, 144))
+        if self.final_count_player< self.count_final:
+            self.screen.fill((34, 177, 76))
             font = pygame.font.Font(None,50)
-            text = font.render("You Win",True,(0,0,0))
+            text = font.render("YOU HAVE WON",True,(0,0,0))
             pos = (125,375)
+            pos2 = (125,425)
+            score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : " + str(self.count_final) + " MOVE"
+            text2= font.render(score,True,(0,0,0))
             self.screen.blit(text,pos)
+            self.screen.blit(text2,pos2)
         else:
-            self.screen.fill((255, 144, 144))
+            self.screen.fill((227, 38, 26))
+            font = pygame.font.Font(None,50)
+            text = font.render("YOU HAVE LOST",True,(0,0,0))
+            pos = (125,375)
+            pos2 = (125,425)
+            score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : " + str(self.count_final) + " MOVE"
+            text2= font.render(score,True,(0,0,0))
+            self.screen.blit(text,pos)
+            self.screen.blit(text2,pos2)
 
-            print("you lose")
 
     def run(self,difficulty):
         self.screen.fill((255, 255, 255))
@@ -137,13 +148,13 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     x, y = pygame.mouse.get_pos()
                     x, y = (y - 40) // 45, (x - 40) // 45
-                    print(x,y)
                     self.grid.reset(x, y)
                     self.grid.move(x, y)
                     
                     if self.in_game:
 
                         if is_find:
+                            self.final_count_player = self.grid.count_move
                             self.in_game = False
                             self.win_menu = True
                             self.grid.actualize_robot_position()

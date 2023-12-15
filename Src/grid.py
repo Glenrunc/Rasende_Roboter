@@ -48,13 +48,13 @@ class Grid(object):
     def win_display(self,screen):
             font = pygame.font.Font(None,50)
             text = font.render("YOU HAVE FOUND A PATH...",True,(0,0,0))
-            text2 = font.render("Let's see if you have won against IA",True,(0,0,0))
+            text2 = font.render("Let see if you have won against IA",True,(0,0,0))
             pos = (125,375)
             pos2 = (125,450)
             screen.fill((255,215,0))
             screen.blit(text,pos)
             screen.blit(text2,pos2)
-            screen.blit(pygame.image.load("../Asset/ok.png"), (760,5))
+            screen.blit(pygame.image.load("../Asset/next_win.png"), (760,5))
             pygame.display.update()
          
     def win(self,screen):
