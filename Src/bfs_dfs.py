@@ -65,14 +65,14 @@ def BFS_or_DFS(empty_grid:Grid, initial_node_state:Node,color_mission:Color,coor
                 print("Final node: ", process_node.state)
                 print("Mission color: ", color_mission)
                 print("Mission coordinate: ", coordinate_mission)
-                path = find_final_path(node_find)
+                path,count_move = find_final_path(node_find)
                 end_time = time.time()
                 elapsed_time = end_time - start_time
                 print(f"Time elapsed: {elapsed_time} seconds")
                 print(f"Number of states that have been visited: {len(visited_state)}")
                 print(f"States/s: {len(visited_state) / elapsed_time:.0f}")
                 
-                return path
+                return path,count_move
 
         if not stack_state:
             return None
@@ -136,6 +136,6 @@ def find_final_path(final_node:Node):
         list_state.append(father_node.state)
         father_node = father_node.father_node    
     real_state = list_state[::-1]
-    return real_state
+    return real_state, len(real_state)-1
 
 

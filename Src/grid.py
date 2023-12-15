@@ -8,6 +8,7 @@ class Grid(object):
     def __init__(self):
         self.grid = np.array([[Case() for _ in range(16)] for _ in range(16)])
         self.count_move = 0
+        self.count_move_ia = 0
         self.begin_path = 0
     
     def reset_move(self):
@@ -45,28 +46,28 @@ class Grid(object):
                 self.grid[i, j].clean()     
 
     def win_display(self,screen):
-            font = pygame.font.Font(None,100)
-            text = font.render("YOU HAVE WON",True,(0,0,0))
+            font = pygame.font.Font(None,50)
+            text = font.render("YOU HAVE FOUND A PATH...",True,(0,0,0))
+            text2 = font.render("Let's see if you have won against IA",True,(0,0,0))
             pos = (125,375)
-            screen.fill((rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
+            pos2 = (125,450)
+            screen.fill((255,215,0))
             screen.blit(text,pos)
+            screen.blit(text2,pos2)
+            screen.blit(pygame.image.load("../Asset/ok.png"), (760,5))
             pygame.display.update()
          
     def win(self,screen):
-        timeout = t.time()
         if self.grid[self.goal_coordinate[0],self.goal_coordinate[1]].status.color == self.color_goal :
-            while t.time() - timeout < 2:
-                self.win_display(screen)
-            screen.fill((255,255,255))
-            self.update_super_goal()
-            self.initial_position = self.position_robot
-            self.count_move = 0
+            return True
+        return False    
     
     #reset the round
     def reset(self,i,j):
         if (i == -1 and j==16):
             self.begin_path=0
             self.count_move = 0
+            self.count_move_ia = 0
             self.clean_color_grid()
             for robot in self.position_robot:
                 self.clean_status(self.position_robot.get(robot)[0],self.position_robot.get(robot)[1])
@@ -421,12 +422,12 @@ class Grid(object):
     def display(self, screen):
         pygame.draw.rect(screen, (255, 255, 255), (5, 10, 50, 30))
         #Screen count move 
-        police = pygame.font.Font(None, 36)
+        # police = pygame.font.Font(None, 36)
 
-        text = police.render(str(self.count_move), True, (0,0,0))
+        # text = police.render(str(self.count_move), True, (0,0,0))
         screen.blit(pygame.image.load("../Asset/reset_button.png"),(760,5))
 
-        screen.blit(text, (5,10))
+        # screen.blit(text, (5,10))
         for i in range(16):
             for j in range(16):
 

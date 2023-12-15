@@ -6,29 +6,33 @@ class Game:
     
     def __init__(self,grid:Grid):
         
+        #Initialization
         pygame.init()
         self.screen = pygame.display.set_mode((HEIGHT,WIDTH))
         pygame.display.set_caption("Rasende Roboter")
         self.clock = pygame.time.Clock()
         self.screen.fill((255,255,255))
+
+        #Boolean to decide which screen show 
         self.in_menu = True
         self.in_rules_menu = False
         self.in_choice_menu = False
         self.in_game = True
         self.mode_review = False
+        self.is_end = False
+        self.win_menu = False
+        #Preparation of the grid 
         self.grid = grid  
         self.grid.grid_final()
-
-
-
         self.start_position_robot = self.grid.position_robot
-        clean_all_status(self.grid,self.start_position_robot)
-        self.path = BFS_or_DFS(self.grid,Node(self.start_position_robot,None),self.grid.color_goal,self.grid.goal_coordinate,True)
-        # self.grid.initHeur(self.start_position_robot)
-        self.grid.actualize_robot_position()
-        clean_all_status(self.grid,self.grid.position_robot)
-        add_status_empty_grid(self.grid,self.start_position_robot)
+
+        #While round_count <= 2 -> run 
+        # self.round_count = 0
+        #Usefull to process the review mode
         self.grid.begin_path = 0
+
+
+        
 
     def display_menu(self):
 
@@ -59,16 +63,72 @@ class Game:
         
         self.screen.blit(pygame.image.load("../Asset/arrow_right.png"), (500, 0))
         self.screen.blit(pygame.image.load("../Asset/arrow_left.png"), (400, 0))
-        self.screen.blit(pygame.image.load("../Asset/red_cross.png"), (600, 0))
+        self.screen.blit(pygame.image.load("../Asset/ok.png"), (600, 0))
+
+    def display_screen_ending(self):
+        if self.grid.count_move< self.count_final:
+            self.screen.fill((144, 255, 144))
+            font = pygame.font.Font(None,50)
+            text = font.render("You Win",True,(0,0,0))
+            pos = (125,375)
+            self.screen.blit(text,pos)
+        else:
+            self.screen.fill((255, 144, 144))
+
+            print("you lose")
 
     def run(self,difficulty):
         self.screen.fill((255, 255, 255))
-       
+        
+        
+        #Use DFS
+        if difficulty == 1 : 
+            clean_all_status(self.grid,self.start_position_robot)
+            result = BFS_or_DFS(self.grid,Node(self.start_position_robot,None),self.grid.color_goal,self.grid.goal_coordinate,False)
+            if result is not None:
+                self.path, self.count_final = result
+            else:
+                self.path = None
+                self.count_final = 0
+            # self.grid.initHeur(self.start_position_robot)
+            self.grid.actualize_robot_position()
+            clean_all_status(self.grid,self.grid.position_robot)
+            add_status_empty_grid(self.grid,self.start_position_robot)
+            if self.path != None:
+                print("*********DFS_SOLUTION***********\n")
+                print("In -->",self.count_final," move\n")
+                for position in self.path:
+                    print(position)
+            else:
+                print("No solution found for DFS........")
+        #Use BFS
+        if difficulty == 2 :
+            clean_all_status(self.grid,self.start_position_robot)
+            result = BFS_or_DFS(self.grid,Node(self.start_position_robot,None),self.grid.color_goal,self.grid.goal_coordinate,True)
+            if result is not None:
+                self.path, self.count_final = result
+            else:
+                self.path = None
+                self.count_final = 0
+            # self.grid.initHeur(self.start_position_robot)
+            self.grid.actualize_robot_position()
+            clean_all_status(self.grid,self.grid.position_robot)
+            add_status_empty_grid(self.grid,self.start_position_robot)
+            if self.path != None:
+                print("*********BFS_SOLUTION***********\n")
+                print("In -->",self.count_final," move\n")
+                for position in self.path:
+                    print(position)
+            else:
+                print("No solution found for BFS........")
+        #Use A*
+        if difficulty == 3 :  
+            pass      
         if self.path != None:
             end_path = len(self.path) - 1
 
         while True:
-
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -80,22 +140,40 @@ class Game:
                     print(x,y)
                     self.grid.reset(x, y)
                     self.grid.move(x, y)
-
+                    
                     if self.in_game:
-                        # Light Button
-                        if x == -1 and 14 <= y <= 15:
-                            if self.path != None:
+
+                        if is_find:
+                            self.in_game = False
+                            self.win_menu = True
+                            self.grid.actualize_robot_position()
+                            clean_all_status(self.grid,self.grid.position_robot)
+                            add_status_empty_grid(self.grid,self.start_position_robot)
+                           
+
+                    if self.win_menu:
+                        if x == -1 and y ==16:
+                            
+                            if self.count_final != 0:
                                 self.grid.begin_path = 0
-                                self.in_game =False
+                                self.win_menu =False
+                                is_find = False
                                 self.mode_review = True
                                 self.grid.actualize_robot_position()
                                 clean_all_status(self.grid,self.grid.position_robot)
                                 add_status_empty_grid(self.grid,self.start_position_robot)
                                 self.grid.display(self.screen)
+
+                            if self.count_final == 0:
+                                self.win_menu =False
+                                self.is_end =True
+        
+
                     if self.mode_review:
                         if x == -1 and y == 8:
                             #Left_arrow
                             if self.grid.begin_path - 1 >= 0:
+                                self.grid.count_move_ia = self.grid.count_move_ia - 1
                                 self.grid.begin_path = self.grid.begin_path - 1
                                 self.grid.actualize_robot_position()
                                 clean_all_status(self.grid, self.grid.position_robot)
@@ -105,6 +183,7 @@ class Game:
                         if x == -1 and y == 10:
                             #Right_Arrow
                             if self.grid.begin_path + 1 <= end_path:
+                                self.grid.count_move_ia = self.grid.count_move_ia +1
                                 self.grid.begin_path = self.grid.begin_path + 1
                                 self.grid.actualize_robot_position()
                                 clean_all_status(self.grid, self.grid.position_robot)
@@ -112,27 +191,39 @@ class Game:
                                 self.grid.display(self.screen)
 
                         if x == -1 and y == 12:
-                            #RedCross
+                            #Check
+                            self.grid.count_move_ia = 0
                             self.mode_review = False
-                            self.in_game = True
-                            self.grid.actualize_robot_position()
-                            clean_all_status(self.grid, self.grid.position_robot)
-                            add_status_empty_grid(self.grid, self.start_position_robot)
-                            self.grid.display(self.screen)
+                            self.is_end = True
+                           
                          
 
             if self.in_game :
+                is_find = self.grid.win(self.screen)
+
+
                 self.screen.fill((255, 255, 255))
                 self.begin_path = 0 
                 self.grid.display(self.screen)
                 self.display_review_screen()
+                police = pygame.font.Font(None, 36)
+                text = police.render(str(self.grid.count_move), True, (0,0,0))
+                self.screen.blit(text, (5,10))
 
             if self.mode_review:
                 self.screen.fill((255, 255, 255))
-
                 self.display_mode_review()
                 self.grid.clean_color_grid()
                 self.grid.display(self.screen)
+                police = pygame.font.Font(None, 36)
+                text = police.render(str(self.grid.count_move_ia), True, (0,0,0))
+                self.screen.blit(text, (5,10))
+
+            if self.win_menu:
+                self.grid.win_display(self.screen)
+            if self.is_end :
+                self.screen.fill((255, 255, 255))
+                self.display_screen_ending()
 
             
             pygame.display.flip()

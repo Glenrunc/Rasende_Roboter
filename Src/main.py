@@ -5,8 +5,7 @@ from a_star import *
 
 if __name__ == "__main__" :
     grid = Grid()
-
     game = Game(grid)
     level = game.menu()
-    game.run(0)
+    game.run(level)
   
