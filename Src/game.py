@@ -55,10 +55,6 @@ class Game:
         self.screen.blit(pygame.image.load("../Asset/easy.png"),(115,500))
         self.screen.blit(pygame.image.load("../Asset/back.png"),(0,0))
     
-    def display_review_screen(self):
-        self.screen.blit(pygame.image.load("../Asset/show.png"),(700,0))
-
-
     def display_mode_review(self):
         
         self.screen.blit(pygame.image.load("../Asset/arrow_right.png"), (500, 0))
@@ -72,10 +68,16 @@ class Game:
             text = font.render("YOU HAVE WON",True,(0,0,0))
             pos = (125,375)
             pos2 = (125,425)
-            score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : " + str(self.count_final) + " MOVE"
+            if self.count_final == 999:
+                score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : NO MOVE FOUND"
+            else:
+                score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : " + str(self.count_final) + " MOVE"
+
             text2= font.render(score,True,(0,0,0))
             self.screen.blit(text,pos)
             self.screen.blit(text2,pos2)
+            self.screen.blit(pygame.image.load("../Asset/winner.png"), (120, 50))
+
         else:
             self.screen.fill((227, 38, 26))
             font = pygame.font.Font(None,50)
@@ -86,6 +88,13 @@ class Game:
             text2= font.render(score,True,(0,0,0))
             self.screen.blit(text,pos)
             self.screen.blit(text2,pos2)
+            self.screen.blit(pygame.image.load("../Asset/loser.png"), (120, 50))
+        text3 = font.render("RESTART THE GAME",True,(0,0,0))
+        pos3 = (125,500)
+        text4 = font.render("IF YOU WANT TO PLAY AGAIN",True,(0,0,0))
+        pos4 = (125,550)
+        self.screen.blit(text3,pos3)
+        self.screen.blit(text4,pos4)
 
 
     def run(self,difficulty):
@@ -100,7 +109,7 @@ class Game:
                 self.path, self.count_final = result
             else:
                 self.path = None
-                self.count_final = 0
+                self.count_final = 999
             # self.grid.initHeur(self.start_position_robot)
             self.grid.actualize_robot_position()
             clean_all_status(self.grid,self.grid.position_robot)
@@ -120,7 +129,7 @@ class Game:
                 self.path, self.count_final = result
             else:
                 self.path = None
-                self.count_final = 0
+                self.count_final = 999
             # self.grid.initHeur(self.start_position_robot)
             self.grid.actualize_robot_position()
             clean_all_status(self.grid,self.grid.position_robot)
@@ -149,11 +158,12 @@ class Game:
                     x, y = pygame.mouse.get_pos()
                     x, y = (y - 40) // 45, (x - 40) // 45
                     self.grid.reset(x, y)
-                    self.grid.move(x, y)
+                    self.grid.move(x, y)   
+                    
                     
                     if self.in_game:
 
-                        if is_find:
+                        if self.grid.win(self.screen):
                             self.final_count_player = self.grid.count_move
                             self.in_game = False
                             self.win_menu = True
@@ -181,6 +191,9 @@ class Game:
         
 
                     if self.mode_review:
+                        if self.count_final == 999:
+                            self.mode_review = False
+                            self.is_end = True
                         if x == -1 and y == 8:
                             #Left_arrow
                             if self.grid.begin_path - 1 >= 0:
@@ -206,17 +219,15 @@ class Game:
                             self.grid.count_move_ia = 0
                             self.mode_review = False
                             self.is_end = True
-                           
                          
 
             if self.in_game :
-                is_find = self.grid.win(self.screen)
+                # is_find = self.grid.win(self.screen)
 
 
                 self.screen.fill((255, 255, 255))
                 self.begin_path = 0 
                 self.grid.display(self.screen)
-                self.display_review_screen()
                 police = pygame.font.Font(None, 36)
                 text = police.render(str(self.grid.count_move), True, (0,0,0))
                 self.screen.blit(text, (5,10))
