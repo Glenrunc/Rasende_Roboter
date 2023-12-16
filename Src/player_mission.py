@@ -49,7 +49,8 @@ class Player(object):
 
     def update_asset(self):
         self.asset = ASSET_MAP.get((self.color, Mission.EMPTY),"empty")
-
+        
+#Will be replaced by random generation 
 mission_tab = []
 
 # Add RED

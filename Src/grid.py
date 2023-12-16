@@ -1,11 +1,18 @@
 from plate import *
- 
+
 HEIGHT = 800
 WIDTH = 800 
+
 class Grid(object):
 
     def __init__(self):
         self.grid = np.array([[Case() for _ in range(16)] for _ in range(16)])
+        self.count_move = 0
+        self.count_move_ia = 0
+        self.begin_path = 0
+    
+    def reset_move(self):
+        self.count_move = 0 
 
     def wall_around(self):
         for i in range(16):
@@ -32,74 +39,78 @@ class Grid(object):
     def clean_status(self,i,j):
         player = Player(Color.EMPTY)
         self.grid[i,j].status = player
-
+    
     def clean_color_grid(self):
         for i in range(16):
             for j in range(16):
                 self.grid[i, j].clean()     
 
     def win_display(self,screen):
-            font = pygame.font.Font(None,100)
-            text = font.render("YOU HAVE WON",True,(0,0,0))
+            font = pygame.font.Font(None,50)
+            text = font.render("YOU HAVE FOUND A PATH...",True,(0,0,0))
+            text2 = font.render("Let see if you have won against IA",True,(0,0,0))
             pos = (125,375)
-            screen.fill((rd.randint(0,255),rd.randint(0,255),rd.randint(0,255)))
+            pos2 = (125,450)
+            screen.fill((255,215,0))
             screen.blit(text,pos)
+            screen.blit(text2,pos2)
+            screen.blit(pygame.image.load("../Asset/next_win.png"), (760,5))
             pygame.display.update()
          
     def win(self,screen):
-        timeout = t.time()
         if self.grid[self.goal_coordinate[0],self.goal_coordinate[1]].status.color == self.color_goal :
-            while t.time() - timeout < 2:
-                self.win_display(screen)
-            screen.fill((255,255,255))
-            self.update_super_goal()
+            return True
+        return False    
+    
+    #reset the round
+    def reset(self,i,j):
+        if (i == -1 and j==16):
+            self.begin_path=0
+            self.count_move = 0
+            self.count_move_ia = 0
+            self.clean_color_grid()
+            for robot in self.position_robot:
+                self.clean_status(self.position_robot.get(robot)[0],self.position_robot.get(robot)[1])
+            for robot in self.initial_position:
+                self.add_status(robot,self.initial_position.get(robot)[0],self.initial_position.get(robot)[1])
+            self.actualize_robot_position()
+    
+    def print_way(self,i,j):
+
+        self.possible_move()
+        for couple in self.possible_move_per_robot[self.grid[i,j].status.color]:
+            for direction,coordinate in couple.items():
+                k = i
+                l = j
+                if direction == 'RIGHT':
+                    while l < coordinate[1]:
+                        self.grid[i,l+1].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        l=l+1
+                if direction == 'LEFT':
+                    while l > coordinate[1]:
+                        self.grid[i,l-1].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        l=l-1
+                if direction == 'UP':
+                    while k > coordinate[0]:
+                        self.grid[k-1,j].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        k=k-1
+                if direction == 'DOWN':
+                    while k < coordinate[0]:
+                        self.grid[k+1,j].update_color(COLOR_MAP.get(self.grid[i,j].status.color))
+                        k=k+1
+
 
     def move(self,i,j):
         # self.possible_move()
         if 0 <= i < 16 and 0 <= j < 16:
             #IF the player wants to clean a way 
-            if (self.grid[i,j].color == (255,255,255)) & (self.grid[i,j].status.color == Color.EMPTY):
+            if (self.grid[i,j].color == (255,255,255)) and (self.grid[i,j].status.color == Color.EMPTY):
                 self.clean_color_grid()
             #When The player click on a robot , usefull to indicate the possible way  
             if (self.grid[i,j].status.color != Color.EMPTY):
                 self.clean_color_grid()
-                #verification move
-                # To the right
-                k = i
-                l = j
-                while l < 15 :
-                    if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)):
-                        self.grid[k,l+1].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        l = l+1   
-                    else:
-                        break
-                # To the left
-                k = i
-                l = j    
-                while l > 0 :
-                    if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)):
-                        self.grid[k,l-1].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        l = l-1   
-                    else:
-                        break
-                # To the up 
-                k = i
-                l = j 
-                while k > 0 :
-                    if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)):
-                        self.grid[k-1,l].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        k = k-1   
-                    else:
-                        break
-                #To the down 
-                k = i
-                l = j 
-                while k < 15 :
-                    if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)):
-                        self.grid[k+1,l].update_color(COLOR_MAP.get(self.grid[i,j].status.color)) 
-                        k = k+1   
-                    else:
-                        break
+                self.possible_move()
+                self.print_way(i,j)
             #MOVE 
             if(self.grid[i,j].color != (255,255,255)):
 
@@ -111,6 +122,7 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
 
             if(self.grid[i,j].color != (255,255,255)):
 
@@ -122,6 +134,8 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+
 
             if(self.grid[i,j].color != (255,255,255)):
                 
@@ -133,6 +147,8 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+
 
             if(self.grid[i,j].color != (255,255,255)):
                 
@@ -144,13 +160,16 @@ class Grid(object):
                     self.clean_status(self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][0],self.position_robot[INVERTED_COLOR_MAP[self.grid[i, j].color]][1])
                     self.clean_color_grid()
                     self.possible_move()
+                    self.count_move = self.count_move + 1
+       
 
         # print(self.possible_move_per_robot)
+
     #Get the move with the color and the direction      
     def get_move(self, color, direction):
         self.possible_move()
         color_data = self.possible_move_per_robot.get(color)
-        for  data in color_data:
+        for data in color_data:
             for dir in data:
                 if dir == direction:
                     return data[dir]
@@ -160,7 +179,7 @@ class Grid(object):
     def possible_move(self):
 
         self.actualize_robot_position()
-        self.possible_move_per_robot = {}
+        self.possible_move_per_robot = {} #{<Color.BLUE: 3>: [{'RIGHT': (2, 5)}, {'LEFT': (2, 0)}, {'UP': (1, 1)}, {'DOWN': (5, 1)}], <Color.RED: 4>: [{'RIGHT': (0, 3)}, {'LEFT': (0, 0)}, {'DOWN': (1, 1)}], <Color.GREEN: 2>: [{'RIGHT': (5, 15)}, {'LEFT': (5, 7)}, {'UP': (0, 12)}, {'DOWN': (6, 12)}], <Color.YELLOW: 1>: [{'RIGHT': (4, 14)}, {'LEFT': (4, 3)}, {'UP': (0, 7)}, {'DOWN': (5, 7)}]}
         color_robot = [Color.BLUE,Color.RED,Color.GREEN,Color.YELLOW]
 
         for robot in color_robot:
@@ -170,7 +189,7 @@ class Grid(object):
             k = i
             l = j
             while l < 15 :
-                if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False) & (self.grid[k,l+1].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[1] == False) and (self.grid[k,l+1].wall[3] == False) and (self.grid[k,l+1].status.color == Color.EMPTY)): 
                     l = l+1   
                 else:
                     break
@@ -180,17 +199,17 @@ class Grid(object):
             k = i
             l = j    
             while l > 0 :
-                if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)& (self.grid[k,l-1].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[3] == False) and (self.grid[k,l-1].wall[1] == False) and (self.grid[k,l-1].status.color == Color.EMPTY)): 
                     l = l-1   
                 else:
                     break
             if(l!=j):
-                self.possible_move_per_robot[robot].append({"LEFT":(k,l)})            
+                self.possible_move_per_robot[robot].append({"LEFT":(k,l)})              
             # To the up 
             k = i
             l = j 
             while k > 0 :
-                if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)& (self.grid[k-1,l].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[0] == False) and (self.grid[k-1,l].wall[2] == False) and (self.grid[k-1,l].status.color == Color.EMPTY)): 
                     k = k-1   
                 else:
                     break
@@ -200,14 +219,156 @@ class Grid(object):
             k = i
             l = j 
             while k < 15 :
-                if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False) & (self.grid[k+1,l].status.color == Color.EMPTY)): 
+                if ((self.grid[k,l].wall[2] == False) and (self.grid[k+1,l].wall[0] == False) and (self.grid[k+1,l].status.color == Color.EMPTY)): 
                     k = k+1   
                 else:
                     break
             if(k != i):
                 self.possible_move_per_robot[robot].append({"DOWN":(k,l)})        
 
+
       
+   
+    
+    def initHeur(self,robot_position):
+        self.add_status(Color.RED, 7, 7)
+        self.add_status(Color.BLUE, 7, 8)
+        self.add_status(Color.GREEN, 8, 8)
+        self.actualize_robot_position()
+        
+        robot=Color.YELLOW
+        cible = self.goal_coordinate
+    #on met l'emplacement de la cible à 0
+        self.grid[cible[0],cible[1]].heuristique=0
+        
+    #emplacement de départ
+        p_fictif=[cible[0],cible[1]]
+        self.grid[p_fictif[0],p_fictif[1]].heuristique=0
+        a_traiter=[]
+        a_traiter.append(p_fictif)
+        
+        while(a_traiter!=[]):
+            p_fictif=a_traiter[0]
+            value=self.grid[p_fictif[0],p_fictif[1]].heuristique +1
+            self.add_status(robot, p_fictif[0], p_fictif[1]) #on met le robot sur la case
+            self.actualize_robot_position()
+            self.possible_move()
+            coor=self.get_move(robot,'UP')
+            if coor is not None :
+
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
+                    up=p_fictif[0]-1
+                    while (up >= coor[0]):
+                        temp=[up,p_fictif[1]]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        up=up-1
+            coor=self.get_move(robot,'DOWN')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
+                    down=p_fictif[0]+1
+                    while (down <= coor[0]):
+                     
+                        temp=[down,p_fictif[1]]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        down=down+1
+            coor=self.get_move(robot,'LEFT')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
+                    left=p_fictif[1]-1
+                    while (left >= coor[1]):
+                       
+                        temp=[p_fictif[0],left]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        left=left-1
+            coor=self.get_move(robot,'RIGHT')
+            if coor is not None :
+                if (self.grid[coor[0],coor[1]].heuristique == 30):
+                    right=p_fictif[1]+1
+                  
+                    while (right <= coor[1]):
+                      
+                        temp=[p_fictif[0],right]
+                        a_traiter.append(temp)
+                        self.grid[temp[0],temp[1]].heuristique=value
+                        right=right+1
+            self.clean_status(p_fictif[0], p_fictif[1])
+                
+
+            a_traiter.pop(0)
+        self.clean_status(7,7)
+        self.clean_status(7,8)
+        self.clean_status(8,8)
+        for color in robot_position:  
+            self.add_status(color,robot_position[color][0],robot_position[color][1])
+        self.actualize_robot_position()
+       
+    
+    def printHeur(self):
+        print("Here is the heuristic table usefull for BFS and A*")
+        tab = np.zeros((16,16))
+        for i,ligne in enumerate(self.grid):
+            for j,element in enumerate(ligne):
+                tab[i][j]=element.heuristique
+        print(tab)
+
+    def getHeur(self,position):
+        return self.grid[position[0],position[1]].heuristique
+    
+      #Get the possible move for a goal
+    def possible_move_goal(self, goal_position):
+        
+        possible_move= []
+
+
+        
+        i = goal_position[0]
+        j = goal_position[1]
+        k = i
+        l = j
+        
+        while k > 0 :
+            if ((self.grid[k,l].wall[0] == False) & (self.grid[k-1,l].wall[2] == False)): 
+                k = k-1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))            
+        #To the down 
+        k = i
+        l = j 
+        while k < 15 :
+            if ((self.grid[k,l].wall[2] == False) & (self.grid[k+1,l].wall[0] == False)): 
+                k = k+1   
+            else:
+                break
+        if(k != i):
+            possible_move.append((k,l))
+        #To the top   
+        while l < 15 :
+            if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False)): 
+                l = l+1   
+            else:
+                break
+        if(l!=j):    
+            possible_move.append((k,l))
+        # To the left
+        k = i
+        l = j    
+        while l > 0 :
+            if ((self.grid[k,l].wall[3] == False) & (self.grid[k,l-1].wall[1] == False)): 
+                l = l-1   
+            else:
+                break
+        if(l!=j):
+            possible_move.append((k,l))            
+        # To the up 
+        k = i
+        l = j 
+        return possible_move
+
 
     #After a move, the robot position needs to be update                        
     def actualize_robot_position(self):
@@ -245,6 +406,7 @@ class Grid(object):
         self.add_status(Color.YELLOW, 4, 7)
         self.add_status(Color.GREEN, 5, 12)
         self.actualize_robot_position()
+        self.initial_position = self.position_robot
         self.update_super_goal()
 
     #Random choice of the mission to be completed
@@ -258,7 +420,14 @@ class Grid(object):
     
     #Use to display the board
     def display(self, screen):
-        
+        pygame.draw.rect(screen, (255, 255, 255), (5, 10, 50, 30))
+        #Screen count move 
+        # police = pygame.font.Font(None, 36)
+
+        # text = police.render(str(self.count_move), True, (0,0,0))
+        screen.blit(pygame.image.load("../Asset/reset_button.png"),(760,5))
+
+        # screen.blit(text, (5,10))
         for i in range(16):
             for j in range(16):
 
@@ -308,8 +477,8 @@ class Grid(object):
             for mission in mission_tab:
                 if(self.grid[mission[0],mission[1]].status.color == Color.EMPTY):
                     screen.blit(pygame.image.load(ASSET_MAP.get((mission[2],mission[3]),"empty")),(mission[1]*45+45,mission[0]*45+45))
-           
- # Creation of the fourth plates        
+            
+ # Creation of the fourth plates, just for testing reason, will be replaced by real random generation      
 _plate1 = Plate()
 # _plate1.wall_generation(0)
 #Double protection
