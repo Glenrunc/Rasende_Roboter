@@ -78,7 +78,7 @@ class Game:
             self.screen.blit(text2,pos2)
             self.screen.blit(pygame.image.load("../Asset/winner.png"), (120, 50))
 
-        else:
+        if self.final_count_player > self.count_final:
             self.screen.fill((227, 38, 26))
             font = pygame.font.Font(None,50)
             text = font.render("YOU HAVE LOST",True,(0,0,0))
@@ -89,6 +89,17 @@ class Game:
             self.screen.blit(text,pos)
             self.screen.blit(text2,pos2)
             self.screen.blit(pygame.image.load("../Asset/loser.png"), (120, 50))
+        if self.final_count_player == self.count_final:
+            self.screen.fill((255, 172, 42))
+            font = pygame.font.Font(None,50)
+            text = font.render("EQUALITY",True,(0,0,0))
+            pos = (125,375)
+            pos2 = (125,425)
+            score = "YOU : " + str(self.final_count_player) + " MOVE /  IA : " + str(self.count_final) + " MOVE"
+            text2= font.render(score,True,(0,0,0))
+            self.screen.blit(text,pos)
+            self.screen.blit(text2,pos2)
+
         text3 = font.render("RESTART THE GAME",True,(0,0,0))
         pos3 = (125,500)
         text4 = font.render("IF YOU WANT TO PLAY AGAIN",True,(0,0,0))
