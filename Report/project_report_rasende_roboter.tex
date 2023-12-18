@@ -71,7 +71,7 @@ Avant de commencer à implémenter la résolution, il nous fallait \textbf{compr
 Ensuite la \textbf{condition} de résolution du problème est la suivante : le robot de la couleur de la mission à atteindre doit se situer sur les coordonnées de cette mission. Ce problème ne présentait pas d'\textbf{inconnues} mise à part le choix de la mission à atteindre en début de partie.\\\\Une fois toutes ses étapes de reconnaissance effectuée et toutes les zones d'ombres écartées, il nous a fallu \textbf{élaborer un plan de résolution du problème}. Nous avons utilisée une approche \textit{\textbf{"Divide and Conquer"}} pour y voir plus clair et résoudre plus efficacement ce problème.
 \subsection{Travail préliminaire}
 La première partie de notre travail a été d'implémenter le jeu tout en gardant à l'esprit l'ajout des algorithmes de résolutions. En effet un mauvais démarrage aurait été chronophage par la suite alors que l'inverse nous a permis d'être très efficace.\\\\
-Une fois le jeu implémenté, il nous a fallu un moyen d'extraire les \textbf{données} explicitées (\textit{\textbf{voir 3}}) lors de notre préparation. L'élément centrale de notre implémentation est la classe "grid" (\textit{\textbf{voir Fig:3}}). En effet les méthodes suivantes permettre d'extraire des données cruciales.
+En implémentant le jeu, il nous a fallu un moyen d'extraire les \textbf{données} explicitées (\textit{\textbf{voir 3}}) lors de notre préparation. L'élément centrale de notre implémentation est la classe "grid" (\textit{\textbf{voir Fig:3}}). En effet les méthodes suivantes permettre d'extraire des données cruciales.
 \begin{itemize}
 \item actualize\_robot\_position() permet de créer un dictionnaire, position\_robot, ayant pour clefs la couleur de chaque robot et pour valeur leur coordonnée dans la grille. 
 \end{itemize}
@@ -82,7 +82,7 @@ Ainsi lors de l'appel de cette méthode, le dictionnaire suivant est créé, enr
   \caption{Dictionnaire position\_robot} 
   \label{fig:Dict}  
 \end{figure}\\\\\\\\\\\\\\\
-Ensuite pour résoudre le point (2) nous avons créé un tableau statique (\textit{\textbf{voir Améliorations}}) de missions sous cette forme.
+Ensuite pour résoudre le point (2) nous avons créé un tableau statique (\textit{\textbf{voir Améliorations de l'implémentation}}) de missions sous cette forme.
 \begin{figure}[htbp]
   \centering  
   \includegraphics[width=0.5\textwidth]{mission.png}  
@@ -94,11 +94,19 @@ Les points (1) et (4) ont été les plus délicats. Ils impliquent une multitude
 \begin{figure}[htbp]
   \centering  
   \includegraphics[width=0.9\textwidth]{possible_move.png}  
-  \caption{Tableau de missions} 
+  \caption{Mouvements possibles par robot} 
   \label{fig:Mission}  
 \end{figure}\\
 Pour arriver à ce résultat il faut actualiser la position des robots dans la grille grâce à la méthode actualize\_robot\_position() et ensuite il faut voir sur les 4 directions (UP, RIGHT, DOWN, LEFT) quelles chemins peut emprunter le robot.\\\\ 
 Pour cela on se sert de deux informations. La première c'est que le robot avance jusqu'à ce qu'il croise un mur. Pour cette condition il suffit de regarder l'attribut "wall" de la classe "Case" qui est un tableau de 4 booléens représentant la présence ou non de mur respectivement dans les 4 directions à une case donnée de la grille.\\\\
 Ainsi si le robot veut aller en haut, il suffit de le faire avancer jusqu'à ce que la case sur laquelle il est, contient un mur dans la direction "UP" du tableau de booléen "wall". Il suffit de vérifier  " wall[0] == True ? Stop : Continue ".\\\\
-La deuxième information est la suivante. Un robot peut arrêter sa progression si il croise un autre robot sur son chemin. Cette condtion est assez simple à verifier si on se sert du dictionnaire position\_robot. On fait avancer le robot dans une direction en vérifiant à la n-ième "case + 1" qu'un autre robot ne s'y trouve pas. Si c'est le cas, on s'arrête, sinon on continue. 
+La deuxième information est la suivante. Un robot peut arrêter sa progression si il croise un autre robot sur son chemin.\\\\ Cette condtion est assez simple à verifier si on se sert du dictionnaire position\_robot. On fait avancer le robot dans une direction en vérifiant à la n-ième "case + 1" qu'un autre robot ne s'y trouve pas. Si c'est le cas, on s'arrête, sinon on continue. 
+\subsection{Problème de planification et de décision séquentiel}
+Pour résoudre ce problème, il a fallu définir la représentation \textbf{d'un état} qui permettait d'illustrer l'entièreté de notre problème à un instant donné.\\\\ 
+Grâce à notre travail préliminaire, un état à l'instant t sera représenté par le dictionnaire vu à la figure 4. Il ne faut pas oublier que la position des robots ne vaut rien sans la grille correspondante. \\\\
+Ensuite il faut que l'on définisse \textbf{un système de production}. Pour cela, on se servira du dictionnaire vu à la figure 6.\\\\
+Il faut ensuite définir un \textbf{état initial} et un ou des \textbf{état/s final/finaux}. Pour cela il suffit de prendre la position de départ de chaque robot (figure 4) pour l'état initial.\\\\
+Pour les états finaux il suffit que la robot de la couleur de la mission soit sur les coordonnées de celle-ci et ça peut importe où se trouve les autres robots.\\\\
+Une fois tout ce travail effectué, il faut maintenant appliquer \textbf{des stratégies de résolutions}.
+
 \end{document}
