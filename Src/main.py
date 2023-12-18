@@ -15,8 +15,8 @@ if __name__ == "__main__" :
     print(grid.color_goal)
     print(grid.goal_coordinate)
 
-    grid.color_goal = Color.GREEN 
-    grid.goal_coordinate = (15,3)
+    # grid.color_goal = Color.BLUE
+    # grid.goal_coordinate = (2,5)
 
     # grid.color_goal = Color.BLUE 
     # grid.goal_coordinate = (10,6)

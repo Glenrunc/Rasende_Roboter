@@ -348,6 +348,8 @@ class Grid(object):
                 break
         if(k != i):
             possible_move.append((k,l))
+        k = i
+        l = j 
         #To the top   
         while l < 15 :
             if ((self.grid[k,l].wall[1] == False) & (self.grid[k,l+1].wall[3] == False)): 
@@ -367,8 +369,7 @@ class Grid(object):
         if(l!=j):
             possible_move.append((k,l))            
         # To the up 
-        k = i
-        l = j 
+        
         return possible_move
 
 
