@@ -1,6 +1,6 @@
 from grid import *
 from bfs_dfs import  *
-
+from a_star import *
     
 class Game:
     
@@ -110,8 +110,6 @@ class Game:
 
     def run(self,difficulty):
         self.screen.fill((255, 255, 255))
-        
-        
         #Use DFS
         if difficulty == 1 : 
             clean_all_status(self.grid,self.start_position_robot)
@@ -153,8 +151,26 @@ class Game:
             else:
                 print("No solution found for BFS........")
         #Use A*
-        if difficulty == 3 :  
-            pass      
+        if difficulty == 3 :
+            self.grid.initHeur(self.start_position_robot)
+            result = with_secondary_goal(self.grid)
+            if result is not None:
+                self.path, self.count_final = result
+            else:
+                self.path = None
+                self.count_final = 999
+            
+            self.grid.actualize_robot_position()
+            clean_all_status(self.grid,self.grid.position_robot)
+            add_status_empty_grid(self.grid,self.start_position_robot)
+            if self.path != None:
+                print("*********A* SOLUTION***********\n")
+                print("In -->",self.count_final," move\n")
+                for position in self.path:
+                    print(position)
+            else:
+                print("No solution found for A*........")
+
         if self.path != None:
             end_path = len(self.path) - 1
 

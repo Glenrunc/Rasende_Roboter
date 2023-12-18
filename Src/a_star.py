@@ -1,5 +1,4 @@
 from grid import *
-from game import *
 from collections import deque
 from player_mission import Color
 import random
@@ -111,7 +110,7 @@ def with_secondary_goal(grid):
     if states_p != None:
         for state in states_p:
             list_state.append(state)
-        return list_state
+        return list_state, len(list_state)-1
     else:
         print("Objectif principal impossible !")
         return None
@@ -154,6 +153,6 @@ def a_star_search(grid, start, color, goal):
       
     print("Objectif : ",goal)
     list_state.append(grid.position_robot)
-    return list_state
+    return list_state, len(list_state)-1
 
         
