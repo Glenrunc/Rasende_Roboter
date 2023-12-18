@@ -4,11 +4,8 @@ from a_star import *
 
 
 if __name__ == "__main__" :
-    # game = Game()
-    # game.run()
-
-
     grid = Grid()
+
     grid.grid_final()
 
     print("GOAL : ")
@@ -44,5 +41,10 @@ if __name__ == "__main__" :
     #     real_path = path[::-1]
     #     for state in real_path:
     #          print(state)
+
+
+    #game = Game(grid)
+    #level = game.menu()
+    #game.run(0)
 
     # # pass

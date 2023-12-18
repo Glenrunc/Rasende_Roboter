@@ -43,9 +43,21 @@ Les règles sont assez simple. Le joueur dispose d'un plateau de 16x16 cases. Su
 Les déplacements sont assez simple également. Les robots ne peuvent suivre que 4 directions (haut, bas, gauche, droite). De plus une fois qu'une direction est prise, le robot en question ne s'arrête que lorsqu'il croise un mur ou un autre robot.\\\\Chaque partie commence par le tirage d'une mission. Une fois la mission choisit, un compte à rebourt est lancé. Pendant ce temps les différents joueurs analyse la position de chaque robot et essaye, dans leur tête, de trouver un moyen de résoudre le problème. Pour faciliter la compréhension, si on regarde la Figure 1, le robot jaune doit atteindre la cible afficher au centre du plateau. Ici elle se situe aux coordonnées (7,2).\\\\
 Si un joueur à une solution, il fait signe et donne sa réponse. Si elle est bonne, il gagne, sinon les autres tentent de résoudre le problème.
 \subsection{Choix et explications de notre implémentation}
-Le but du projet étant d'implémenter différents algorithmes de résolutions, il nous ait paru évident de modifier certains points du jeu.\\\\Dans la version physique, le jeu se joue à plusieurs, chacun pour soi. Nous avons décider que notre jeu pouvait se jouer seul ou à plusieurs contre les algorithmes de résolutions. Ainsi le but de chaque partie est de résoudre le problème en moins de coup possible certes, mais surtout en moins de coup que l'intelligence artificielle.\\\\Lorsque qu'on arrive sur le jeu, on peut choisir le nombre de  manches que l'on veut jouer. A la fin de celles-ci on compte le nombre de manches gagnées contre l'IA. Si ce nombre est supérieur à celui du nombre de manche perdu, on gagne la partie, sinon on perd.\\\\On peut également choisir de "Reset" la manche si on voit que l'on bloque. Un mode revisionnage à été implémenté pour voir les coups effectués par l'IA. Ce mode est uniquement disponible lorsque la manche est terminée. Enfin un boutton abandon permet de passer à la manche suivante et met automatiquement l'IA vainqueur.
+Le but du projet étant d'implémenter différents algorithmes de résolutions, il nous ait paru évident de modifier certains points du jeu.\\\\Dans la version physique, le jeu se joue à plusieurs, chacun pour soi. Nous avons décider que notre jeu pouvait se jouer seul ou à plusieurs contre les algorithmes de résolutions. Ainsi le but de chaque partie est de résoudre le problème en moins de coup possible certes, mais surtout en moins de coup que l'intelligence artificielle.\\\\Lorsque qu'on arrive sur le jeu, on peut choisir le nombre de  manches que l'on veut jouer. A la fin de celles-ci on compte le nombre de manches gagnées contre l'IA. Si ce nombre est supérieur à celui du nombre de manche perdu, on gagne la partie, sinon on perd.\\\\On peut également choisir de "Reset" la manche si on voit que l'on bloque. Un mode revisionnage à été implémenté pour voir les coups effectués par l'IA. Ce mode est uniquement disponible lorsque la manche est terminée. Enfin un boutton abandon permet de passer à la manche suivante et met automatiquement l'IA vainqueur.\\\\
+Au niveau de l'ergonomie de jeu. Il se joue uniquement grâce à une souris ou un pavé tactile. Lorsque l'on clique sur un robot, un chemin s'affiche pour aider le joueur à voir les cases atteignables. Ensuite il peu cliquer sur les différents chemin possible pour déplacer le robot. 
+\begin{figure}[h]
+  \centering  
+  \includegraphics[width=0.5\textwidth]{deplacement.png}  
+  \caption{Exemple de déplacement du robot jaune} 
+  \label{fig:Plateau}  
+\end{figure}
 \section{Approche orientée objet}
 Pour ce qui est de l'implémentation du jeu uniquement, nous vous détailleront certaines méthodes servant aux algorithmes de résolution. Mais pour le reste, nous avons décidé de faire uniquement un diagramme de classe pour rendre plus visuel nos explications. 
-
+\begin{figure}[h]
+  \centering  
+  \includegraphics[width=1\textwidth]{diagram_class.png}  
+  \caption{Diagramme de classe du jeu Rasende Roboter} 
+  \label{fig:Plateau}  
+\end{figure}
 
 \end{document}
