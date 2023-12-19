@@ -3,6 +3,10 @@
 \usepackage{hyperref}
 \usepackage{fancyhdr}  
 \usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
 
 \geometry{
   top=1in,
@@ -97,16 +101,79 @@ Les points (1) et (4) ont été les plus délicats. Ils impliquent une multitude
   \caption{Mouvements possibles par robot} 
   \label{fig:Mission}  
 \end{figure}\\
-Pour arriver à ce résultat il faut actualiser la position des robots dans la grille grâce à la méthode actualize\_robot\_position() et ensuite il faut voir sur les 4 directions (UP, RIGHT, DOWN, LEFT) quelles chemins peut emprunter le robot.\\\\ 
+Pour arriver à ce résultat il faut actualiser la position des robots dans la grille grâce à la méthode actualize\_robot\_position() et ensuite il faut voir sur les 4 directions (UP, RIGHT, DOWN, LEFT) quels chemins peut emprunter le robot.\\\\ 
 Pour cela on se sert de deux informations. La première c'est que le robot avance jusqu'à ce qu'il croise un mur. Pour cette condition il suffit de regarder l'attribut "wall" de la classe "Case" qui est un tableau de 4 booléens représentant la présence ou non de mur respectivement dans les 4 directions à une case donnée de la grille.\\\\
 Ainsi si le robot veut aller en haut, il suffit de le faire avancer jusqu'à ce que la case sur laquelle il est, contient un mur dans la direction "UP" du tableau de booléen "wall". Il suffit de vérifier  " wall[0] == True ? Stop : Continue ".\\\\
 La deuxième information est la suivante. Un robot peut arrêter sa progression si il croise un autre robot sur son chemin.\\\\ Cette condtion est assez simple à verifier si on se sert du dictionnaire position\_robot. On fait avancer le robot dans une direction en vérifiant à la n-ième "case + 1" qu'un autre robot ne s'y trouve pas. Si c'est le cas, on s'arrête, sinon on continue. 
-\subsection{Problème de planification et de décision séquentiel}
+\subsection{Représentation d'un état}
 Pour résoudre ce problème, il a fallu définir la représentation \textbf{d'un état} qui permettait d'illustrer l'entièreté de notre problème à un instant donné.\\\\ 
 Grâce à notre travail préliminaire, un état à l'instant t sera représenté par le dictionnaire vu à la figure 4. Il ne faut pas oublier que la position des robots ne vaut rien sans la grille correspondante. \\\\
-Ensuite il faut que l'on définisse \textbf{un système de production}. Pour cela, on se servira du dictionnaire vu à la figure 6.\\\\
-Il faut ensuite définir un \textbf{état initial} et un ou des \textbf{état/s final/finaux}. Pour cela il suffit de prendre la position de départ de chaque robot (figure 4) pour l'état initial.\\\\
+Ensuite il nous a falllu définir \textbf{un système de production}. Pour cela, on se servira du dictionnaire vu à la figure 6.\\\\
+Il a fallu ensuite définir un \textbf{état initial} et un ou des \textbf{état/s final/finaux}. Pour cela il suffit de prendre la position de départ de chaque robot (figure 4) pour l'état initial.\\\\
 Pour les états finaux il suffit que la robot de la couleur de la mission soit sur les coordonnées de celle-ci et ça peut importe où se trouve les autres robots.\\\\
 Une fois tout ce travail effectué, il faut maintenant appliquer \textbf{des stratégies de résolutions}.
+\subsection{Stratégies de recherche dans un graphe}
+\subsubsection{Représenter les mouvements du jeu}
+Pour résoudre un problème du jeu Rasende Roboter, il faut produire des états à l'instant t + 1 valident à partir d'un état à l'instant t. Ces états produit sont lié à leur état père. Si on applique ce raisonnement sur chaque états produit à l'étape t + 1, t + 2 , etc... On se retrouve à constuire une arborescence de tous les coups possibles pour chaque robot au cours de la partie. La racine de cette arbre sera alors \textbf{l'état initial} et le but sera alors de chercher un des \textbf{états finaux} dans l'arborescence.
+\begin{figure}[htbp]
+  \centering  
+  \includegraphics[width=1\textwidth]{arbre.png}  
+  \caption{Construction de l'arborescence} 
+  \label{fig:Arborescence}  
+\end{figure}\\
+Chaque étage de l'arbre représente le nombre de déplacement depuis l'état initial. La figure 7 montre l'état au niveau n = 0 et les états au niveau n = 1. Faisons maintenant un peu de mathématiques, si chaque robot peut se déplacer dans les 4 directions à chaque tour. Sachant qu'il y a 4 robots sur le plateau. Les états au niveau n = 1 seront au nombre de 16 car 4 x 4 = 16.\\\\
+Maintenant si on suppose qu'au niveau n = 2 chaque état du niveau n = 1 peut encore générer 16 autres états. On aura 16 x 16 = 256 + 1 états dans l'arbre générer. Et cela seulement pour vérifier toutes les configuartions possible en deux coups.\\\\
+Biensûr, chaque état ne génère pas tout le temps 16 autres états car certains robots ne peuvent que faire certains déplacements suivant leur position.\\\\
+Mais en extrapolant, on voit vite la croissance exponentielle du nombre d'états générés suivant le nombre de coup nécessaire à la résolution du problème. En règle générale, le nombre d'états selon le nombre de coup n se calcul:\\ \[\forall n \in \mathbb{N^*} , 16^{(n)} + 1\] \\
+\textbf{Comment à partir d'un état, peut-on générer les autres états ?}\\\\
+Ceci est plutôt simple, en se servant de la méthode de la classe "grid" possible\_move() , des dictionnaires position\_robot et possible\_move\_per\_robot.\\\\
+En effet quand on arrive sur un état on actualise la position des robots pour être à jour, ensuite on parcours le dictionnaire possible\_move\_per\_robot et on créer un nouvel état en remplaçant uniquement une coordonnée d'un robot et en gardant les autres coordonnées intact.\\\\
+Puis on suit cet algorithme pour générer autant d'états que l'on veut. La fonction next\_state() dans le fichier bfs\_dfs.py est chargée de ce processus de création d'état.\\\\
+Deux fonctions pratiques ont été implémentées pour la fonction next\_state(). add\_status\_empty\_grid() et clean\_all\_status() qui permettent respectivement d'ajouter à partir d'un dictionnaire de la forme du dictionnaire position\_robot les robots sur la grille et de retirer les robots de la grille.\\\\
+Ainsi pour la suite une seule grille suffira pour tous les traitements et tous les algorithmes de résolutions. Ce qui préserve le stockage en mémoire durant l'éxécution.\\\\
+Maintenant que tous les problèmes liés à la représentation des états ont été réglé, nous pouvons passer aux choses sérieuse.
+\subsection{Breadth First Search : BFS}
+Pour résoudre une partie de Rasende Roboter, il suffit maintenant de constuire le graphe des états dynamiquement et de le parcourir pour trouver un des états finaux.\\\\
+Le breadth first search ou largeur d'abord en français et un algorithme de recherche dans un arbre qui dans notre cas nous permettra de trouver, si solution il existe, le meilleur état final possible. C'est à dire celui en moins de coups. Ci-dessous, l'algorithme du BFS.
 
+\begin{algorithm}
+\caption{Breadth First Search}
+\label{alg:bfs-reach}
+\begin{algorithmic}[1]
+  \STATE Entrée: noeud racine $N$
+  \STATE Créer FIFO $Q$, Créer Liste $L$
+  \STATE $Q$.append$(N)$
+  \WHILE{$Q$ n'est pas vide}
+    \STATE Enlever $N$ en tête de liste
+    \STATE Ajouter $L$.append$(N)$
+    \FOR{tous les fils de $N$, noté $f$}
+      \STATE $Q$.append$(f)$
+      \STATE $f$.père = $N$
+    \ENDFOR
+  \ENDWHILE
+  \STATE Si le but a été trouvé return Succes sinon return Echec
+
+\end{algorithmic}
+\end{algorithm}
+Après avoir implémenté l'algorithme. Nous avons pu effectuer les premiers essais. Pour être rigoureux nous avons mesurer le temps que prenait l'algorithme pour trouver une solution, le nombre d'états parcouru et ainsi le nombre d'états par seconde.
+\\\\
+Mais nous avons vite remarqué les limites de cette méthode. Sans améliorations il était presque impossible de trouver des solutions à plus que 7 coups. On le rappel chercher une solution à 7 coups revient au pire des cas à constuire et visiter un arbre de 16 x 16 x 16 x . . . x 16 ( 7-fois ) + 1 états soit 268 435 457 états.\\\\
+Au meilleur de sa performance notre algorithme visitait 5000 états / seconde. Pour 7 coups il lui aurait fallut 268 435 457 / 5 000 = 53 687 secondes soit 14 heures pour tenter de trouver cette solution. Ceci n'est pas raisonnable et bien souvent il y avait un stackoverflow au bout d'un certains temps d'interprétation.
+\subsubsection{Améliorations : BFS}
+Nous avons ensuite vu que les solutions qu'il trouvait rapidement était celle nécessitant le déplacement d'un seul robot. Nous avons donc réduit la génération des états. La fonction is\_already\_visited() permet de générer seulment les états où un robot n'est pas passé. Ainsi les 4 robots vont aller sur toutes les cases possible une unique fois. De plus, au lieu de vérifier si le noeud qu'on traite est le noeud final. On vérifie à la génération de chaque état si celui n'est pas un état final. Ainsi on s'évite la vérification et la génération inutile d'états.\\\\
+Avec toutes ces améliorations voici un exemple sur un échantillon, même cible mais avec les paramètres différents sur la vérification.
+\begin{figure}[!h]
+  \centering  
+  \includegraphics[width=1\textwidth]{sans_verif_generation.png}  
+  \caption{BFS sans la vérification à la génération} 
+  \label{fig:Diagram}  
+\end{figure}\\
+\begin{figure}[!h]
+  \centering  
+  \includegraphics[width=1\textwidth]{avec_verif_generation.png}  
+  \caption{BFS avec la vérification à la génération} 
+  \label{fig:Diagram}  
+\end{figure}\\
+On peut voir que la vérification à la génération épargne la visite de 131 états ce qui permet d'augmenter la vitesse de résolution avec un rapport de 3,75 ce qui n'est pas négligeable.\\\\
+Pour conclure notre BFS permet de résoudre 80 \% des problèmes sur la grilles fournit dans notre jeu.
 \end{document}
