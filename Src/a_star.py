@@ -161,7 +161,6 @@ def a_star_search(grid, start, color, goal):
         iterations += 1
       
     print("Objectif : ",goal)
-    list_state.append(grid.position_robot)
     return list_state
 
         
