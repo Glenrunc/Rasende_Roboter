@@ -112,7 +112,7 @@ Ensuite il nous a falllu définir \textbf{un système de production}. Pour cela,
 Il a fallu ensuite définir un \textbf{état initial} et un ou des \textbf{état/s final/finaux}. Pour cela il suffit de prendre la position de départ de chaque robot (figure 4) pour l'état initial.\\\\
 Pour les états finaux il suffit que la robot de la couleur de la mission soit sur les coordonnées de celle-ci et ça peut importe où se trouve les autres robots.\\\\
 Une fois tout ce travail effectué, il faut maintenant appliquer \textbf{des stratégies de résolutions}.
-\subsection{Stratégies de recherche dans un graphe}
+\subsection{Stratégies de recherche dans un arbre}
 \subsubsection{Représenter les mouvements du jeu}
 Pour résoudre un problème du jeu Rasende Roboter, il faut produire des états à l'instant t + 1 valident à partir d'un état à l'instant t. Ces états produit sont lié à leur état père. Si on applique ce raisonnement sur chaque états produit à l'étape t + 1, t + 2 , etc... On se retrouve à constuire une arborescence de tous les coups possibles pour chaque robot au cours de la partie. La racine de cette arbre sera alors \textbf{l'état initial} et le but sera alors de chercher un des \textbf{états finaux} dans l'arborescence.
 \begin{figure}[htbp]
@@ -124,7 +124,7 @@ Pour résoudre un problème du jeu Rasende Roboter, il faut produire des états 
 Chaque étage de l'arbre représente le nombre de déplacement depuis l'état initial. La figure 7 montre l'état au niveau n = 0 et les états au niveau n = 1. Faisons maintenant un peu de mathématiques, si chaque robot peut se déplacer dans les 4 directions à chaque tour. Sachant qu'il y a 4 robots sur le plateau. Les états au niveau n = 1 seront au nombre de 16 car 4 x 4 = 16.\\\\
 Maintenant si on suppose qu'au niveau n = 2 chaque état du niveau n = 1 peut encore générer 16 autres états. On aura 16 x 16 = 256 + 1 états dans l'arbre générer. Et cela seulement pour vérifier toutes les configuartions possible en deux coups.\\\\
 Biensûr, chaque état ne génère pas tout le temps 16 autres états car certains robots ne peuvent que faire certains déplacements suivant leur position.\\\\
-Mais en extrapolant, on voit vite la croissance exponentielle du nombre d'états générés suivant le nombre de coup nécessaire à la résolution du problème. En règle générale, le nombre d'états selon le nombre de coup n se calcul:\\ \[\forall n \in \mathbb{N^*} , 16^{(n)} + 1\] \\
+Mais en extrapolant, on voit vite la croissance exponentielle du nombre d'états générés suivant le nombre de coup nécessaire à la résolution du problème. En règle générale, le nombre d'états selon le nombre de coup n se calcul:\\ \[\forall n \in \mathbb{N^*} , 16^{n} + 1\] \\
 \textbf{Comment à partir d'un état, peut-on générer les autres états ?}\\\\
 Ceci est plutôt simple, en se servant de la méthode de la classe "grid" possible\_move() , des dictionnaires position\_robot et possible\_move\_per\_robot.\\\\
 En effet quand on arrive sur un état on actualise la position des robots pour être à jour, ensuite on parcours le dictionnaire possible\_move\_per\_robot et on créer un nouvel état en remplaçant uniquement une coordonnée d'un robot et en gardant les autres coordonnées intact.\\\\
@@ -133,7 +133,7 @@ Deux fonctions pratiques ont été implémentées pour la fonction next\_state()
 Ainsi pour la suite une seule grille suffira pour tous les traitements et tous les algorithmes de résolutions. Ce qui préserve le stockage en mémoire durant l'éxécution.\\\\
 Maintenant que tous les problèmes liés à la représentation des états ont été réglé, nous pouvons passer aux choses sérieuse.
 \subsection{Breadth First Search : BFS}
-Pour résoudre une partie de Rasende Roboter, il suffit maintenant de constuire le graphe des états dynamiquement et de le parcourir pour trouver un des états finaux.\\\\
+Pour résoudre une partie de Rasende Roboter, il suffit maintenant de constuire l'arbre des états dynamiquement et de le parcourir pour trouver un des états finaux.\\\\
 Le breadth first search ou largeur d'abord en français et un algorithme de recherche dans un arbre qui dans notre cas nous permettra de trouver, si solution il existe, le meilleur état final possible. C'est à dire celui en moins de coups. Ci-dessous, l'algorithme du BFS.
 
 \begin{algorithm}
@@ -143,19 +143,19 @@ Le breadth first search ou largeur d'abord en français et un algorithme de rech
   \STATE Entrée: noeud racine $N$
   \STATE Créer FIFO $Q$, Créer Liste $L$
   \STATE $Q$.append$(N)$
-  \WHILE{$Q$ n'est pas vide}
+  \WHILE{$Q$ n'est pas vide et que le but ne soit pas atteint}
     \STATE Enlever $N$ en tête de liste
     \STATE Ajouter $L$.append$(N)$
     \FOR{tous les fils de $N$, noté $f$}
-      \STATE $Q$.append$(f)$
       \STATE $f$.père = $N$
+      \STATE $Q$.append$(f)$
     \ENDFOR
   \ENDWHILE
   \STATE Si le but a été trouvé return Succes sinon return Echec
 
 \end{algorithmic}
 \end{algorithm}
-Après avoir implémenté l'algorithme. Nous avons pu effectuer les premiers essais. Pour être rigoureux nous avons mesurer le temps que prenait l'algorithme pour trouver une solution, le nombre d'états parcouru et ainsi le nombre d'états par seconde.
+Après avoir implémenté l'algorithme. Nous avons pu effectuer les premiers essais. Pour être rigoureux nous avons mesurer le temps que prenait l'algorithme pour trouver une solution, le nombre d'états parcouru et ainsi le nombre d'états parcouru par seconde.
 \\\\
 Mais nous avons vite remarqué les limites de cette méthode. Sans améliorations il était presque impossible de trouver des solutions à plus que 7 coups. On le rappel chercher une solution à 7 coups revient au pire des cas à constuire et visiter un arbre de 16 x 16 x 16 x . . . x 16 ( 7-fois ) + 1 états soit 268 435 457 états.\\\\
 Au meilleur de sa performance notre algorithme visitait 5000 états / seconde. Pour 7 coups il lui aurait fallut 268 435 457 / 5 000 = 53 687 secondes soit 14 heures pour tenter de trouver cette solution. Ceci n'est pas raisonnable et bien souvent il y avait un stackoverflow au bout d'un certains temps d'interprétation.
@@ -175,5 +175,45 @@ Avec toutes ces améliorations voici un exemple sur un échantillon, même cible
   \label{fig:Diagram}  
 \end{figure}\\
 On peut voir que la vérification à la génération épargne la visite de 131 états ce qui permet d'augmenter la vitesse de résolution avec un rapport de 3,75 ce qui n'est pas négligeable.\\\\
-Pour conclure notre BFS permet de résoudre 80 \% des problèmes sur la grilles fournit dans notre jeu.
+Pour conclure notre BFS permet de résoudre 80 \% des problèmes sur la grilles fournit dans notre jeu. Le niveau de difficulté associé dans le jeu sera "Medium".
+\subsection{Depth First Search : DFS}
+En ce qui concerne le depht first search, son implémentation a été rapide puisque son principe est le même que le breadth first search mais au lieu de parcourir l'arbre en largeur , le DFS lui le parcours en profondeur. La solution trouvé sera alors avec un nombre de coups beaucoup plus élevés. Voici son algorithme.
+\begin{algorithm}[H]
+\caption{Depth First Search}
+\label{alg:dfs-reach}
+\begin{algorithmic}[2]
+  \STATE Entrée: noeud racine $N$
+  \STATE Créer LIFO $Q$, Créer Liste $L$
+  \STATE $Q$.append$(N)$
+  \WHILE{$Q$ n'est pas vide et que le but ne soit pas atteint}
+    \STATE Enlever $N$ en tête de liste
+    \STATE Ajouter $L$.append$(N)$
+    \FOR{tous les fils de $N$, noté $f$}
+      \STATE $f$.père = $N$
+      \STATE Ajouter en tête de $Q$,les fils notés $f$
+    \ENDFOR
+  \ENDWHILE
+  \STATE Si le but a été trouvé return Succes sinon return Echec
+\end{algorithmic}
+\end{algorithm}
+\subsubsection{Améliorations : DFS}
+Les mêmes améliorations que le BFS ont été implémenté. Il faut néanmoins noter que cet algorithme est plus adapté lorsque l'arbre de recherche a un grand facteur de branchement c'est à dire lorsque le nombre de noeuds au niveau suivant est plus important que celui au niveau actuel. Ce qui est notre cas ici.
+\begin{figure}[!h]
+  \centering  
+  \includegraphics[width=1\textwidth]{bfs_solution_green.png}  
+  \caption{Algorithme BFS sur la cible verte en (4,2)} 
+  \label{fig:Diagram}  
+\end{figure}\\
+\begin{figure}[!h]
+  \centering  
+  \includegraphics[width=1\textwidth]{dfs_solution_green.png}  
+  \caption{Algorithme DFS sur la cible verte en (4,2)} 
+  \label{fig:Diagram}  
+\end{figure}\\
+On le voit mieux sur cet exemple ici, sur une même cible, le DFS parcours seulment 26 états contre 487 pour le BFS pour trouver une solution. Certes, le DFS propose une solution en 26 coups contre 5 pour le BFS. Mais le DFS va environ 23 fois plus vite que le BFS.\\\\
+Le DFS sera le niveau de difficulté "Easy" dans notre jeu puisque qu'il propose des solutions avec un grand nombre de coups.
+\subsection{A*}
+\subsubsection{Amméliorations : A*}
+\subsection{Taux de réussite des algorithmes}
+\section{Améliorations possibles du jeu}
 \end{document}
