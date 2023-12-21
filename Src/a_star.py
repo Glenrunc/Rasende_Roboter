@@ -37,7 +37,12 @@ def with_secondary_goal(grid):
     defaut = 4
     objectif_secondaire = []
     list_state = []
+    goal = grid.goal_coordinate
 
+    initial_node = Node(grid.position_robot,None)
+    clean_all_status(grid,grid.position_robot)
+    grid.initHeur(initial_node.state)
+    add_status_empty_grid(grid,initial_node.state)
     states_p = a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate) 
     if states_p == None:
 
@@ -46,7 +51,7 @@ def with_secondary_goal(grid):
                 if (i != grid.goal_coordinate):
                     if (grid.goal_coordinate[0]==i[0]):
                         diff = grid.goal_coordinate[1]-i[1]
-                        print("diff: ", diff)
+                        #print("diff: ", diff)
                         if (abs(diff) < defaut):
                             objectif_secondaire.clear()
                             defaut = abs(diff)
@@ -57,7 +62,7 @@ def with_secondary_goal(grid):
                                 objectif_secondaire.append(temp)
                     else:
                         diff = grid.goal_coordinate[0]-i[0]
-                        print("diff: ", diff)
+                        #print("diff: ", diff)
                         if (abs(diff) < defaut):
                             objectif_secondaire.clear()
                             defaut = abs(diff)
@@ -68,14 +73,14 @@ def with_secondary_goal(grid):
                                 objectif_secondaire.append(temp)
 
         for i in possible_move:
-            print("move possible: ", i)
+            #print("move possible: ", i)
             possible_next = grid.possible_move_goal(i)
-            print("move possible next: ", possible_next)
+            #print("move possible next: ", possible_next)
             for j in possible_next:
                 if (j != grid.goal_coordinate and j != i):
                     if (i[0]==j[0]):
                         diff = i[1]-j[1]
-                        print("diff: ", diff)
+                        # print("diff: ", diff)
                         if (abs(diff) < defaut):
                             objectif_secondaire.clear()
                             defaut = abs(diff)
@@ -86,7 +91,7 @@ def with_secondary_goal(grid):
                                 objectif_secondaire.append(temp)
                     else:
                         diff = i[0]-j[0]
-                        print("diff: ", diff)
+                        #print("diff: ", diff)
                         if (abs(diff) < defaut):
                             objectif_secondaire.clear()
                             defaut = abs(diff)
@@ -96,28 +101,40 @@ def with_secondary_goal(grid):
                                 temp = (i[0]-diff+k,i[1])
                                 objectif_secondaire.append(temp)
         
-        print("OBJECTIF SECONDAIRE : ", objectif_secondaire)
+        # print("OBJECTIF SECONDAIRE : ", objectif_secondaire)
         color_used = [Color.EMPTY]
         for o in objectif_secondaire:
             available_colors = [c for c in Color if c != grid.color_goal and c not in color_used]
             color = random.choice(available_colors)
             color_used.append(color)
-            print("Couleur objectif secondaire : ",color)
+            # print("Couleur objectif secondaire : ",color)
+            grid.goal_coordinate = o
+            initial_node = Node(grid.position_robot,None)
+            clean_all_status(grid,grid.position_robot)
+            grid.initHeur(initial_node.state)
+            add_status_empty_grid(grid,initial_node.state)
+
             states_s = a_star_search(grid, grid.position_robot[color], color, o)
             if states_s != None:
                 for state in states_s:
                     list_state.append(state)
             else:
-                print("Objectif secondaire impossible !")
+                # print("Objectif secondaire impossible !")
                 return None
-        print("OBJECTIF PRINCIPAL : ")
+        # print("OBJECTIF PRINCIPAL : ")
+        grid.goal_coordinate = goal
+        initial_node = Node(grid.position_robot,None)
+        clean_all_status(grid,grid.position_robot)
+        grid.initHeur(initial_node.state)
+        add_status_empty_grid(grid,initial_node.state)
+    
         states_p = a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate) 
         if states_p != None:
             for state in states_p:
                 list_state.append(state)
             return list_state
         else:
-            print("Objectif principal impossible !")
+            # print("Objectif principal impossible !")
             return None
     else:
         for state in states_p:
@@ -138,14 +155,12 @@ def a_star_search(grid, start, color, goal):
 
     while etat != goal:
         if iterations > 1000:
-            print("Too many iterations, exiting...")
+            # print("Too many iterations, exiting...")
             return None
-        #print("Etat : ",etat)
         grid.possible_move()
         get_possible_coordinates_for_robot(grid, color)
         for voisin in get_possible_coordinates_for_robot(grid, color):
             add_to_open(grid, Open, voisin, goal)
-            #print(Open)
         
         for i in Open:
             if i not in Closed and i in get_possible_coordinates_for_robot(grid, color):
@@ -155,12 +170,11 @@ def a_star_search(grid, start, color, goal):
                 list_state.append(grid.position_robot)
 
                 etat = i
-                # print("Etat : ",etat)
                 break
         
         iterations += 1
       
-    print("Objectif : ",goal)
+    # print("Objectif : ",goal)
     return list_state
 
         

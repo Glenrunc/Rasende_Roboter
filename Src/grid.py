@@ -238,11 +238,17 @@ class Grid(object):
     #on met l'emplacement de la cible à 0
         self.grid[cible[0],cible[1]].heuristique=0
         
+        for i,ligne in enumerate(self.grid):
+            for j,element in enumerate(ligne):
+                element.heuristique=30
+
     #emplacement de départ
         p_fictif=[cible[0],cible[1]]
         self.grid[p_fictif[0],p_fictif[1]].heuristique=0
         a_traiter=[]
         a_traiter.append(p_fictif)
+
+        
         
         while(a_traiter!=[]):
             p_fictif=a_traiter[0]
