@@ -14,33 +14,3 @@ class Plate(object):
                 for j in range (self.N):
                     self.l_grid[i][j].rot90()
                     
-    #TOdo define qt the end of the project
-    # def look_around_case(self,i,j):
-
-    #     pass
-
-    #   # Define random generation wall
-    # def wall_generation(self,number_of_the_plate):
-    #     i = rd.randint(1,6)
-    #     j = rd.randint(1,6)
-        
-    #     if number_of_the_plate == 0:
-    #         self.l_grid[0,j].wall[1] = True
-    #         self.l_grid[i,0].wall[2] = True
-        
-    #     if number_of_the_plate == 1:
-    #         self.l_grid[0,j].wall[1] = True
-    #         self.l_grid[i,7].wall[2] = True
-
-    #     if number_of_the_plate == 2 :
-    #         self.l_grid[7,j].wall[1] = True
-    #         self.l_grid[i,0].wall[2] = True
-        
-    #     if number_of_the_plate == 3:
-    #         self.l_grid[7,j].wall[3] = True
-    #         self.l_grid[i,7].wall[0] = True
-
-    #     for i in range(4):
-    #         k = rd.randint(1,7)
-    #         l = rd.randint(1,7)
-
