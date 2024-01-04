@@ -250,7 +250,7 @@ En pratique, une fois l'heuristique mise en place grâce à la méthode initHeur
 \end{algorithmic}
 \end{algorithm}
 Après des tests nous n'avons pas eu des résultats très positifs puisque le taux de réussite était presque nul. Nous avons donc implémenté une "quête secondaire". Plus précisément, avant de déplacer le robot devant aller sur la cible on place bien les autres robots. Ainsi le robot principal utilise le A* pour atteindre la cible.\\\\
-Malheureusement, cet algorithme devant donner des meilleurs résultats que le BFS n'est pas abouti. Il sera néanmoins utilisé dans le mode "hardcore" de notre jeu.
+Malheureusement, cet algorithme devant donner des meilleurs résultats que le BFS n'est pas abouti. Le code est disponible mais il n'est pas utilisé dans notre implémentation.
 \subsubsection{Améliorations : A*}
 Malgré nos difficultés pour la mise en place de cet algorithme, nous avons des pistes pour l'améliorer grandement !\\\\
 On pourrait associer un poids à un état. C'est-à-dire grâce à la grille décrite dans la figure 12, on créé une méthode qui somme les poids de chaque robot. Ainsi quand on va tirer le noeud avec le poids minimal dans la liste \textit{Opened}, on choisira l'état avec le poids de plus faible.\\\\

@@ -50,7 +50,6 @@ class Game:
         self.screen.blit(pygame.image.load("../Asset/back.png"),(0,0))
 
     def display_choice_menu(self):
-        self.screen.blit(pygame.image.load("../Asset/hardcore.png"),(115,50))
         self.screen.blit(pygame.image.load("../Asset/medium.png"),(115,250))
         self.screen.blit(pygame.image.load("../Asset/easy.png"),(115,500))
         self.screen.blit(pygame.image.load("../Asset/back.png"),(0,0))
@@ -150,30 +149,7 @@ class Game:
                     print(position)
             else:
                 print("No solution found for BFS........")
-        #Use A*
-        if difficulty == 3 :
-            
-            self.path = with_secondary_goal(self.grid)
-            self.grid.actualize_robot_position()  
-            clean_all_status(self.grid,self.grid.position_robot)
-            add_status_empty_grid(self.grid,self.start_position_robot)
-            self.grid.count_move = 0
-            if self.path is not None:
-                self.path, self.count_final = self.path
-            else:
-                self.path = None
-                self.count_final = 999
-
-      
-
-            if self.path != None:
-                print("*********A* SOLUTION***********\n")
-                print("In -->",self.count_final," move\n")
-                for position in self.path:
-                    print(position)
-            else:
-                print("No solution found for A*........")
-
+        
         if self.path != None:
             end_path = len(self.path) - 1
 
@@ -314,8 +290,6 @@ class Game:
                             self.screen.fill((255, 255, 255))
 
                     if self.in_choice_menu:
-                        if 1 <= x <= 4 and 2 <= y <= 14:
-                            return 3 
                         if 5 <= x <= 8 and 2 <= y <= 14:
                             return 2
                         if 10 <= x <= 13 and 2 <= y <= 14:
