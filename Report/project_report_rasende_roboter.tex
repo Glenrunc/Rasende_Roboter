@@ -33,7 +33,7 @@ Le but de ce projet est de mettre en application les différents algorithmes vus
 Ces algorithmes vont être appliqués sur un jeu de société allemand, \href{https://fr.wikipedia.org/wiki/Ricochet_Robots}{\textbf{Rasende Roboter}} ou \href{https://fr.wikipedia.org/wiki/Ricochet_Robots}{Ricochet Robots} en français, créé en 1999 par \href{https://fr.wikipedia.org/wiki/Alex_Randolph}{Alex Randolph}.\\
 \\
 Nous étions trois à réaliser ce projet. Pour nous permettre de s'organiser au mieux, nous avons choisi de faire un répertoire \href{https://github.com/Glenrunc/IA41_Rasende_Roboter}{\textbf {Github}}. Notre raisonnement a été assez simple concernant l'approche du projet. Nous avons décidé d'implémenter premièrement le jeu pour ensuite y incorporer les algorithmes de résolution.\\\\
-Plusieurs sources ont été utiles à la réalisation de ces travaux. Vous les trouverez en fin de rapport. Pour la suite du rapport, "Intelligence artificielle" sera remplacée par "IA".
+Pour la suite du rapport, "Intelligence artificielle" sera remplacée par "IA".
 \section{Implémentation du jeu}
 Nous avons fait le choix de prendre la première version du jeu. En effet une autre est apparu en 2003, qui ajoutait un robot noir, une case mission multicolore et des agencements de murs différents.
 \subsection{Règles du jeu}
@@ -87,14 +87,14 @@ Ainsi lors de l'appel de cette méthode, le dictionnaire suivant est créé, enr
   \caption{Dictionnaire position\_robot} 
   \label{fig:Dict}  
 \end{figure}\\\\\\\\\\\\\\\
-Ensuite pour résoudre le point (2) nous avons créé un tableau statique (\textit{\textbf{voir Améliorations de l'implémentation}}) de missions sous cette forme.
+Ensuite pour résoudre le point (2) nous avons créé un tableau statique de missions sous cette forme.
 \begin{figure}[htbp]
   \centering  
   \includegraphics[width=0.5\textwidth]{mission.png}  
   \caption{Tableau de missions} 
   \label{fig:Mission}  
 \end{figure}\\
-Ainsi lorsque l'on initialise la grille on peut remplacer ses attributs goal\_coordinate et color\_goal par les élements du tableau statique de missions,en tirant aléatoirement une position dans le tableau.\\\\
+Ainsi lorsque l'on initialise la grille on peut remplacer ses attributs goal\_coordinate et color\_goal par les élements du tableau statique de missions, en tirant aléatoirement une position dans le tableau.\\\\
 Les points (1) et (4) ont été les plus délicats. Ils impliquent une multitude de méthodes de la classe "grid".\\\\ Le but était d'avoir une méthode qui initialisait un dictionnaire qui avait pour clefs la couleur de chaque robot et pour valeur une liste de dictionnaires de case atteignable avec pour clefs la direction et pour valeur la coordonnée de la case. Si cela vous paraît trop compliqué voici un exemple.
 \begin{figure}[htbp]
   \centering  
@@ -132,7 +132,7 @@ En effet quand on arrive sur un état on actualise la position des robots pour �
 Puis on suit cet algorithme pour générer autant d'états que l'on veut. La fonction next\_state() dans le fichier bfs\_dfs.py est chargée de ce processus de création d'état.\\\\
 Deux fonctions pratiques ont été implémentées pour la fonction next\_state(). add\_status\_empty\_grid() et clean\_all\_status() qui permettent respectivement d'ajouter à partir d'un dictionnaire de la forme du dictionnaire position\_robot les robots sur la grille et de retirer les robots de la grille.\\\\
 Ainsi pour la suite une seule grille suffira pour tous les traitements et tous les algorithmes de résolutions. Ce qui préserve le stockage en mémoire durant l'éxécution.\\\\
-Maintenant que tous les problèmes liés à la représentation des états ont été réglé, nous pouvons passer aux choses sérieuse.
+Maintenant que tous les problèmes liés à la représentation des états ont été réglé, nous pouvons passer aux choses sérieuses.
 \subsection{Breadth First Search : BFS}
 Pour résoudre une partie de Rasende Roboter, il suffit maintenant de constuire l'arbre des états dynamiquement et de le parcourir pour trouver un des états finaux.\\\\
 Le breadth first search ou largeur d'abord en français est un algorithme de recherche dans un arbre qui dans notre cas nous permettra de trouver, si solution il existe, le meilleur état final possible. C'est à dire celui en moins de coups. Ci-dessous, l'algorithme du BFS.
@@ -214,7 +214,7 @@ Les mêmes améliorations que le BFS ont été implémenté. Il faut néanmoins 
 On le voit mieux sur cet exemple ici, sur une même cible, le DFS parcours seulment 26 états contre 487 pour le BFS pour trouver une solution. Certes, le DFS propose une solution en 26 coups contre 5 pour le BFS. Mais le DFS va environ 23 fois plus vite que le BFS.\\\\
 Le DFS sera le niveau de difficulté "Easy" dans notre jeu puisque qu'il propose des solutions avec un grand nombre de coups.
 \subsection{A*}
-L'objectif de l'algorithme A* est de rechercher le plus court chemin dans un graphe partant d'un l'état initial pour aller à un état final. En principe on va associer à chaque état une fonction qui donnera une valeur.\\\\ Cette valeur va être ensuite utilisée dans l'algorithme. Cette fonction se décompose en deux parties, un coût qui représente un déplacement du robot et une \textbf{heuristique} qui sert à donner une estimation de la distance qu'il reste à parcourir pour le robot.\\\\
+L'objectif de l'algorithme A* est de rechercher le plus court chemin dans un graphe partant d'un état initial pour aller à un état final. En principe on va associer à chaque état une fonction qui donnera une valeur.\\\\ Cette valeur va être ensuite utilisée dans l'algorithme. La fonction se décompose en deux parties, un coût qui représente un déplacement du robot et une \textbf{heuristique} qui sert à donner une estimation de la distance qu'il reste à parcourir pour le robot.\\\\
 Un de nos problèmes a été le choix de notre heuristique. La première a été la distance euclidienne avec des résultats peu concluant, car l'heuristique n'était pas admissible pour ce problème. La deuxième a été celle que nous avons retenue. A chaque début de partie on créer une grille d'entier parallèle à celle du jeu.\\\\ On initialise la case où se trouve la cible à 0. Puis on remplit de 1 les cases accessibles en ligne et en colonne depuis cette case. On effectue ça ainsi de suite en augmentant de n+1 le numéro des cases. Ce numéro représente alors le nombre de coups qu'il faudra faire pour atteindre la cible si le robot se situe sur cette case. Voici un exemple.
 \begin{figure}[!h]
   \centering  
@@ -254,7 +254,7 @@ Malheureusement, cet algorithme devant donner des meilleurs résultats que le BF
 \subsubsection{Améliorations : A*}
 Malgré nos difficultés pour la mise en place de cet algorithme, nous avons des pistes pour l'améliorer grandement !\\\\
 On pourrait associer un poids à un état. C'est-à-dire grâce à la grille décrite dans la figure 12, on créé une méthode qui somme les poids de chaque robot. Ainsi quand on va tirer le noeud avec le poids minimal dans la liste \textit{Opened}, on choisira l'état avec le poids de plus faible.\\\\
-C'est-à-dire que tous les robots se rapprocheront de la cible. Comme ça on évite l'implémentation des quêtes secondaires. On poserait évidemment une condition sur le déplacement des robots non principaux pour ne qu'ils prennent pas place sur les cases de poids strictement inférieur à deux.   
+C'est-à-dire que tous les robots se rapprocheront de la cible. Comme ça on évite l'implémentation des quêtes secondaires. On poserait évidemment une condition sur le déplacement des robots non principaux pour qu'ils ne prennent pas place sur les cases de poids strictement inférieur à deux.   
 \section{Améliorations possibles du jeu}
 Notre jeu est jouable dans les trois niveaux de difficulté. On peut, à la fin de chaque manche visualiser les coups qui ont été produit par l'IA.\\\\
 On pourrait augmenter le nombre de manche contre l'IA durant une partie. On pourrait également générer aléatoirement de nouvelles grilles pour permettre aux joueurs de se challenger davantage et tester nos algorithmes sur ces nouvelles grilles. 
