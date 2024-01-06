@@ -16,7 +16,7 @@
 }
 
 \title{Rapport de projet IA41 - Rasende Roboter}
-\author{SENGEL Noé, POURCINE Mattéo, FLEURET Gabriel}
+
 \date{\today}
 
 
@@ -256,6 +256,6 @@ Malgré nos difficultés pour la mise en place de cet algorithme, nous avons des
 On pourrait associer un poids à un état. C'est-à-dire grâce à la grille décrite dans la figure 12, on créé une méthode qui somme les poids de chaque robot. Ainsi quand on va tirer le noeud avec le poids minimal dans la liste \textit{Opened}, on choisira l'état avec le poids de plus faible.\\\\
 C'est-à-dire que tous les robots se rapprocheront de la cible. Comme ça on évite l'implémentation des quêtes secondaires. On poserait évidemment une condition sur le déplacement des robots non principaux pour qu'ils ne prennent pas place sur les cases de poids strictement inférieur à deux.   
 \section{Améliorations possibles du jeu}
-Notre jeu est jouable dans les trois niveaux de difficulté. On peut, à la fin de chaque manche visualiser les coups qui ont été produit par l'IA.\\\\
-On pourrait augmenter le nombre de manche contre l'IA durant une partie. On pourrait également générer aléatoirement de nouvelles grilles pour permettre aux joueurs de se challenger davantage et tester nos algorithmes sur ces nouvelles grilles. 
+Notre jeu est jouable dans 2 niveaux de difficulté sur 3. On peut, à la fin de chaque manche visualiser les coups qui ont été produit par l'IA.\\\\
+On pourrait augmenter le nombre de manche contre l'IA durant une partie. On pourrait également générer aléatoirement de nouvelles grilles pour permettre aux joueurs de se challenger davantage et tester nos algorithmes sur ces nouvelles grilles. Le A* doit être implémenté correctement par la suite. 
 \end{document}
