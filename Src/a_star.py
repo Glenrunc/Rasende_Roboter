@@ -1,9 +1,10 @@
 from grid import *
+# from game import *
 from collections import deque
 from player_mission import Color
 import random
+import bfs_dfs
 from math import sqrt
-from bfs_dfs import *
 
 def get_possible_coordinates_for_robot(self, target_robot):
     possible_coordinates = []
@@ -39,10 +40,11 @@ def with_secondary_goal(grid):
     list_state = []
     goal = grid.goal_coordinate
 
-    initial_node = Node(grid.position_robot,None)
-    clean_all_status(grid,grid.position_robot)
+
+    initial_node = bfs_dfs.Node(grid.position_robot,None)
+    bfs_dfs.clean_all_status(grid,grid.position_robot)
     grid.initHeur(initial_node.state)
-    add_status_empty_grid(grid,initial_node.state)
+    bfs_dfs.add_status_empty_grid(grid,initial_node.state)
     states_p = a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate) 
     if states_p == None:
 
@@ -109,10 +111,10 @@ def with_secondary_goal(grid):
             color_used.append(color)
             # print("Couleur objectif secondaire : ",color)
             grid.goal_coordinate = o
-            initial_node = Node(grid.position_robot,None)
-            clean_all_status(grid,grid.position_robot)
+            initial_node = bfs_dfs.Node(grid.position_robot,None)
+            bfs_dfs.clean_all_status(grid,grid.position_robot)
             grid.initHeur(initial_node.state)
-            add_status_empty_grid(grid,initial_node.state)
+            bfs_dfs.add_status_empty_grid(grid,initial_node.state)
 
             states_s = a_star_search(grid, grid.position_robot[color], color, o)
             if states_s != None:
@@ -123,26 +125,24 @@ def with_secondary_goal(grid):
                 return None
         # print("OBJECTIF PRINCIPAL : ")
         grid.goal_coordinate = goal
-        initial_node = Node(grid.position_robot,None)
-        clean_all_status(grid,grid.position_robot)
+        initial_node = bfs_dfs.Node(grid.position_robot,None)
+        bfs_dfs.clean_all_status(grid,grid.position_robot)
         grid.initHeur(initial_node.state)
-        add_status_empty_grid(grid,initial_node.state)
+        bfs_dfs.add_status_empty_grid(grid,initial_node.state)
     
         states_p = a_star_search(grid, grid.position_robot[grid.color_goal], grid.color_goal, grid.goal_coordinate) 
         if states_p != None:
             for state in states_p:
                 list_state.append(state)
-            
-            return list_state, len(list_state)-1
+            return list_state
         else:
             # print("Objectif principal impossible !")
-            
             return None
     else:
+        print("Objectif principal atteint direcment !")
         for state in states_p:
             list_state.append(state)
-       
-        return list_state,len(list_state)-1
+        return list_state
     
 
 def a_star_search(grid, start, color, goal):
@@ -179,5 +179,3 @@ def a_star_search(grid, start, color, goal):
       
     # print("Objectif : ",goal)
     return list_state
-
-        
