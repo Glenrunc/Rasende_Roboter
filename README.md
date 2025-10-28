@@ -27,11 +27,3 @@ You can choose between three classic pathfinding algorithms:
     ```sh
     pip install pygame numpy
     ```
-
-## Usage
-
-You can run the game from the command line. You can specify which level to load and which algorithm to use.
-
-```sh
-# General syntax
-python main.py --level [level_number] --algo [BFS|DFS|A*]
