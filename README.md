@@ -1,9 +1,6 @@
 # Rasende Roboter (Ricochet Robots) Solver
 
 A Python implementation of the board game *Rasende Roboter*, built with Pygame. This project features a playable game and multiple pathfinding algorithms (BFS, DFS, A*) to automatically find the shortest solution.
-
-![gameplay_screenshot](https://raw.githubusercontent.com/Glenrunc/Rasende_Roboter/main/screenshot.png)
-
 ## Features
 
 -   **Full Game Engine**: Complete game logic built from scratch.
